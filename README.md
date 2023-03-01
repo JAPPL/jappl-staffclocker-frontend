@@ -2,16 +2,12 @@
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
 
-## Creating a project
+## Linting/Formatting
 
-If you're seeing this, you've probably already done this step. Congrats!
+If pre-commit fails due to linting, use:
 
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+npm run format && git add .
 ```
 
 ## Developing
