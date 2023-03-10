@@ -4,13 +4,12 @@
 	import IconButton from '@smui/icon-button';
 	import BottomAppBar, { Section } from '@smui-extra/bottom-app-bar';
 	let bottomAppBar: BottomAppBar;
-	// let secondaryColor: boolean = false;
 </script>
 
 <div class="login centered">
 	<div class="column" style="margin-left: 10%; margin-right: 10%;">
 		<div style="margin-bottom: 15px;">
-			<p>Login</p>
+			<p>Register</p>
 		</div>
 
 		<div style="margin-bottom: 10px;">
@@ -25,7 +24,12 @@
 					</div>
 				</Cell>
 				<Cell span={11}>
-					<input class="center" style="border: 0; padding-top: 5px;" placeholder="Email" />
+					<input
+						class="center"
+						style="border: 0; padding-top: 5px;"
+						placeholder="Email"
+						type="email"
+					/>
 				</Cell>
 			</LayoutGrid>
 		</div>
@@ -52,12 +56,34 @@
 			</LayoutGrid>
 		</div>
 
+		<div style="margin-bottom: 10px; margin-top: 20px;">
+			<p2>Confirm password</p2>
+		</div>
+
+		<div class="input-field">
+			<LayoutGrid>
+				<Cell span={1}>
+					<div class="center-stuff">
+						<Icon class="material-icons">key</Icon>
+					</div>
+				</Cell>
+				<Cell span={11}>
+					<input
+						class="center"
+						style="border: 0; padding-top: 5px;"
+						placeholder="Confirm password"
+						type="password"
+					/>
+				</Cell>
+			</LayoutGrid>
+		</div>
+
 		<button class="input-field" style="margin-top: 49.5px; background-color: #51B198;">
-			<p style="font-size: 20px;">Login</p>
+			<p style="font-size: 20px;">Register</p>
 		</button>
 
 		<div class="center-stuff register">
-			<a href="/register"><u>Don't have an account? Register here</u></a>
+			<a href="/login"><u>Already have an account? Login here</u></a>
 		</div>
 	</div>
 </div>
@@ -113,7 +139,7 @@
 	.login {
 		border-radius: 30px;
 		background-color: #130f42;
-		height: 459.5px;
+		height: 575px;
 		width: 500px;
 		display: flex;
 	}
