@@ -1,10 +1,8 @@
 <script lang="ts">
 	import LayoutGrid, { Cell } from '@smui/layout-grid';
 	import { Icon } from '@smui/common';
-	import IconButton from '@smui/icon-button';
 	import BottomAppBar, { Section } from '@smui-extra/bottom-app-bar';
 	let bottomAppBar: BottomAppBar;
-	// let secondaryColor: boolean = false;
 </script>
 
 <div class="login centered">
@@ -66,10 +64,6 @@
 	<Section>
 		<!-- <IconButton class="material-icons">menu</IconButton> -->
 		<p2 class="center-stuff" style="font-size: 90%;">Contact | About</p2>
-	</Section>
-	<Section>
-		<IconButton class="material-icons" aria-label="Search">search</IconButton>
-		<IconButton class="material-icons" aria-label="More">more_vert</IconButton>
 	</Section>
 </BottomAppBar>
 
