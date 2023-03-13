@@ -2,15 +2,16 @@ import {
 	type Auth as FirebaseAuth,
 	getAuth,
 	GoogleAuthProvider,
-	signInWithPopup,
-	onAuthStateChanged
+	signInWithRedirect,
+	onAuthStateChanged,
+	signOut
 } from 'firebase/auth';
 import { initializeApp, type FirebaseApp } from 'firebase/app';
 import type { FirebaseConfig } from '../../interfaces/firebase-config';
 import authStore from '../../store/auth-store';
 import { goto } from '$app/navigation';
 
-export class FirebaseAuthentication {
+class FirebaseAuthentication {
 	private app?: FirebaseApp;
 	private auth?: FirebaseAuth;
 	private firebaseConfig: FirebaseConfig = {
@@ -42,14 +43,6 @@ export class FirebaseAuthentication {
 		});
 	}
 
-	public getAuthApp(): FirebaseAuth {
-		return this.auth as FirebaseAuth;
-	}
-
-	public getApp(): FirebaseApp {
-		return this.app as FirebaseApp;
-	}
-
 	public getToken(): Promise<string | null> {
 		const currentUser = this.auth?.currentUser;
 		if (currentUser) {
@@ -58,7 +51,7 @@ export class FirebaseAuthentication {
 		return Promise.resolve(null);
 	}
 
-	public async loginWithGoogle() {
+	public async loginWithGoogle(): Promise<void> {
 		try {
 			const provider = new GoogleAuthProvider();
 			provider.setCustomParameters({
@@ -67,9 +60,15 @@ export class FirebaseAuthentication {
 			if (!this.auth) {
 				this.initApp();
 			}
-			await signInWithPopup(this.auth!, provider);
+			await signInWithRedirect(this.auth!, provider);
 		} catch (e) {
 			console.log(e);
 		}
 	}
+
+	public async signOut(): Promise<void> {
+		await signOut(this.auth as FirebaseAuth);
+	}
 }
+
+export const firebaseAuth: FirebaseAuthentication = new FirebaseAuthentication();

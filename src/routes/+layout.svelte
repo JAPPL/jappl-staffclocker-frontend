@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { FirebaseAuthentication } from '../core/services/authentication/firebase-authentication';
+	import { firebaseAuth } from '../core/services/authentication/firebase-authentication';
 
 	onMount(() => {
-		const firebaseAuth: FirebaseAuthentication = new FirebaseAuthentication();
 		firebaseAuth.initApp();
 	});
 </script>

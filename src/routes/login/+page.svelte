@@ -2,7 +2,12 @@
 	import LayoutGrid, { Cell } from '@smui/layout-grid';
 	import { Icon } from '@smui/common';
 	import BottomAppBar, { Section } from '@smui-extra/bottom-app-bar';
+	import { firebaseAuth } from '../../core/services/authentication/firebase-authentication';
 	let bottomAppBar: BottomAppBar;
+
+	async function login() {
+		await firebaseAuth.loginWithGoogle();
+	}
 </script>
 
 <div class="login centered">
@@ -52,6 +57,10 @@
 
 		<button class="input-field" style="margin-top: 49.5px; background-color: #51B198;">
 			<p style="font-size: 20px;">Login</p>
+		</button>
+
+		<button on:click={login} class="input-field" style="margin-top: 5px; background-color: red;">
+			<p style="font-size: 20px;">Login with Google</p>
 		</button>
 
 		<div class="center-stuff register">
