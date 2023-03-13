@@ -3,6 +3,7 @@ import type { AuthStore } from '../interfaces/auth-store';
 
 const authStore = writable<AuthStore>({
 	isLoggedIn: false,
+	user: null,
 	firebaseControlled: false
 });
 

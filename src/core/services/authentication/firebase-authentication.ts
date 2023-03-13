@@ -15,7 +15,7 @@ class FirebaseAuthentication {
 	private app?: FirebaseApp;
 	private auth?: FirebaseAuth;
 
-	public async initApp() {
+	public initApp() {
 		this.app = initializeApp(firebaseConfig);
 		this.auth = getAuth(this.app);
 
