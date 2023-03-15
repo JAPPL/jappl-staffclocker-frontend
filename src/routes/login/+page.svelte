@@ -2,11 +2,26 @@
 	import LayoutGrid, { Cell } from '@smui/layout-grid';
 	import { Icon } from '@smui/common';
 	import BottomAppBar, { Section } from '@smui-extra/bottom-app-bar';
-	import { firebaseAuth } from '../../core/services/authentication/firebase-authentication';
+	import { loginWithGoogle } from '../../lib/firebase/firebase-client';
+	import { goto } from '$app/navigation';
+	import type { ErrorResponse } from '../../lib/interface/error-response';
 	let bottomAppBar: BottomAppBar;
 
 	async function login() {
-		await firebaseAuth.loginWithGoogle();
+		const token: string = await loginWithGoogle();
+		await fetch('/auth/session', {
+			method: 'POST',
+			headers: new Headers({ Authorization: `Bearer ${token}` })
+		}).then(async (response: Response) => {
+			if (response.ok) {
+				await goto('/timelog');
+			} else if (response.status == 500) {
+				console.log('internal server error');
+			} else {
+				const test: ErrorResponse = await response.json();
+				console.log(test.detail);
+			}
+		});
 	}
 </script>
 

@@ -14,3 +14,4 @@ vite.config.ts.timestamp-*
 /static/smui.css
 /static/smui-dark.css
 firebase-config.json
+firebase-admin-config.json
