@@ -5,6 +5,8 @@
 	import { loginWithGoogle } from '../../lib/firebase/firebase-client';
 	import { goto } from '$app/navigation';
 	import type { ErrorResponse } from '../../lib/interface/error-response';
+	import { setUser } from '../../lib/store/user';
+	import type { DecodedIdToken } from 'firebase-admin/auth';
 	let bottomAppBar: BottomAppBar;
 
 	async function login() {
@@ -14,6 +16,8 @@
 			headers: new Headers({ Authorization: `Bearer ${token}` })
 		}).then(async (response: Response) => {
 			if (response.ok) {
+				const user: DecodedIdToken | null = await response.json();
+				setUser(user);
 				await goto('/timelog');
 			} else if (response.status == 500) {
 				console.log('internal server error');

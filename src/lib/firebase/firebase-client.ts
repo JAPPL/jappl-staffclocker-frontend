@@ -8,6 +8,7 @@ import {
 	signInWithPopup
 } from 'firebase/auth';
 import type { Auth as FirebaseAuth } from '@firebase/auth';
+import { setUser } from '../store/user';
 
 export const getClientApp = (): FirebaseApp => {
 	if (getApps().length) {
@@ -25,10 +26,6 @@ export const loginWithGoogle = async (): Promise<string> => {
 	provider.setCustomParameters({
 		login_hint: 'user@example.com'
 	});
-	await signInWithPopup(auth, provider).then(async (userCredential) => {
-		localStorage.setItem('userName', userCredential.user.displayName || '');
-		localStorage.setItem('profileImage', userCredential.user.photoURL || '');
-		localStorage.setItem('email', userCredential.user.email || '');
-	});
+	await signInWithPopup(auth, provider);
 	return auth.currentUser?.getIdToken() || '';
 };

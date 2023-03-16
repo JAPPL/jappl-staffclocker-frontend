@@ -16,7 +16,7 @@ export const verifyIdToken = (token: string): Promise<DecodedIdToken> => {
 	return auth.verifyIdToken(token);
 };
 
-export const createSessionCookie = async (token: string, maxAge: number) => {
+export const createSessionCookie = async (token: string, maxAge: number): Promise<string> => {
 	const expiresIn: number = maxAge * 1000;
 	const auth: Auth = getAuth(getAdminApp());
 	const sessionCookie: string = await auth.createSessionCookie(token, { expiresIn });
