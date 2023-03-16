@@ -1,15 +1,20 @@
-import { derived, type Readable, writable, type Writable } from 'svelte/store';
-import type { DecodedIdToken } from 'firebase-admin/lib/auth';
+import type { Writable } from 'svelte/store';
+import type { UserStore } from '../interface/user-store';
+import { browser } from '$app/environment';
+import { persisted } from 'svelte-local-storage-store';
 
-export const locals: Writable<App.Locals> = writable<App.Locals>();
+export const userStore: Writable<UserStore> = persisted<UserStore>(
+	'user',
+	browser
+		? JSON.parse(localStorage.getItem('user') || '{}')
+		: {
+				name: null,
+				email: null,
+				picture: null
+		  }
+);
 
-export const user: Readable<DecodedIdToken | null> = derived<
-	Writable<App.Locals>,
-	DecodedIdToken | null
->(locals, ($locals, set) => {
-	set($locals.token);
-});
-
-export const setUser = (user: DecodedIdToken | null): void => {
-	locals.update(($locals) => ({ ...$locals, token: user }));
+export const setUser = (userValue: UserStore): void => {
+	localStorage.setItem('user', JSON.stringify(userValue));
+	userStore.update(($userStore) => ({ ...$userStore, ...userValue }));
 };

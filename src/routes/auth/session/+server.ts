@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return new Response(JSON.stringify({ detail: 'invalid auth header' }), { status: 401 });
 	}
 	try {
-		const user = await verifyIdToken(token);
+		const user: DecodedIdToken | null = await verifyIdToken(token);
 		const sessionCookie: string = await createSessionCookie(token, ONE_WEEK_IN_SECOND);
 		return new Response(JSON.stringify(user), {
 			status: 200,

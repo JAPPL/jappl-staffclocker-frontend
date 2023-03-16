@@ -5,10 +5,10 @@ import {
 	setPersistence,
 	inMemoryPersistence,
 	GoogleAuthProvider,
-	signInWithPopup
+	signInWithPopup,
+	type User
 } from 'firebase/auth';
 import type { Auth as FirebaseAuth } from '@firebase/auth';
-import { setUser } from '../store/user';
 
 export const getClientApp = (): FirebaseApp => {
 	if (getApps().length) {
@@ -20,12 +20,12 @@ export const getClientApp = (): FirebaseApp => {
 	return app;
 };
 
-export const loginWithGoogle = async (): Promise<string> => {
+export const loginWithGoogle = async (): Promise<User | null> => {
 	const auth: FirebaseAuth = getAuth(getClientApp());
 	const provider: GoogleAuthProvider = new GoogleAuthProvider();
 	provider.setCustomParameters({
 		login_hint: 'user@example.com'
 	});
 	await signInWithPopup(auth, provider);
-	return auth.currentUser?.getIdToken() || '';
+	return auth.currentUser;
 };
