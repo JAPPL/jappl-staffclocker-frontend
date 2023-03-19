@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button, { Label } from '@smui/button';
-	import Card from '@smui/card';
 	import BottomAppBar, { Section } from '@smui-extra/bottom-app-bar';
+	import LayoutGrid, { Cell } from '@smui/layout-grid';
 	import { loginWithGoogle } from '../../lib/firebase/firebase-client';
 	import { goto } from '$app/navigation';
 	import type { ErrorResponse } from '../../lib/interface/error-response';
@@ -36,12 +36,19 @@
 	}
 </script>
 
+<img src="src/lib/images/logo-dark.png" class="logo-size" alt="logo" />
 <div class="full-screen-size">
-	<img src="src/lib/images/logo-dark.png" class="logo-size" alt="logo" />
 	<div class="center">
 		<div class="login">
 			<div class="login-card-content">
-				<h1 style="margin-bottom: 15px;">Welcome to JAPPL</h1>
+				<LayoutGrid style="padding: 0">
+					<Cell span={9}>
+						<h1 style="margin-bottom: 15px;">Welcome to JAPPL</h1>
+					</Cell>
+					<Cell span={3}>
+						<img src="src/lib/images/user.png" class="user-image-size" alt="user" />
+					</Cell>
+				</LayoutGrid>
 
 				<p>Options</p>
 
@@ -60,16 +67,21 @@
 						<Label>Login with Google</Label>
 					</Button>
 				</div>
-
 				<p style="margin-bottom: 0">if you can not login, please contact admin.</p>
 			</div>
 		</div>
 	</div>
-
+</div>
+<div class="bottom-app-margin">
 	<BottomAppBar bind:this={bottomAppBar}>
 		<Section>
-			<!--			 <IconButton class="material-icons">menu</IconButton>-->
-			<p>Contact | About</p>
+			<Button variant="raised">
+				<Label>Contact</Label>
+			</Button>
+			<div class="divider" />
+			<Button variant="raised">
+				<Label>About</Label>
+			</Button>
 		</Section>
 	</BottomAppBar>
 </div>
@@ -78,12 +90,27 @@
 	@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap');
 
 	.full-screen-size {
-		min-height: 90vh;
+		min-height: 80vh;
+		position: relative;
+	}
+
+	.divider {
+		margin: 0 4px;
+		border-left: 1px solid white;
+		height: 35px;
+	}
+
+	.bottom-app-margin :global(.smui-bottom-app-bar > .smui-bottom-app-bar__section) {
+		padding: 13px;
 	}
 
 	.logo-size {
 		width: 137px;
 		height: 100%;
+	}
+
+	.user-image-size {
+		height: 70px;
 	}
 
 	.google-logo {
@@ -93,12 +120,10 @@
 	}
 
 	.center {
-		display: flex;
-		justify-content: center;
-	}
-
-	.login-card-content {
-		margin: 60px 10% 10% 10%;
+		position: absolute;
+		top: 45%;
+		left: 50%;
+		transform: translate(-50%, -50%);
 	}
 
 	p {
@@ -117,7 +142,7 @@
 	.login {
 		border-radius: 30px;
 		background-color: #130f42;
-		min-height: 270px;
-		min-width: 400px;
+		width: 410px;
+		padding: 30px;
 	}
 </style>
