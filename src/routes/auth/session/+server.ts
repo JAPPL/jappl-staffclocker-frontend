@@ -8,7 +8,9 @@ export const POST: RequestHandler = async ({ request }) => {
 	const authHeader: string = request.headers.get('Authorization') || '';
 	const [scheme, token] = authHeader.split(' ');
 	if (scheme !== 'Bearer' || !token) {
-		return new Response(JSON.stringify({ detail: 'invalid auth header' }), { status: 401 });
+		return new Response(JSON.stringify({ detail: 'Invalid authorization header.' }), {
+			status: 401
+		});
 	}
 	try {
 		const user: DecodedIdToken | null = await verifyIdToken(token);
@@ -18,6 +20,8 @@ export const POST: RequestHandler = async ({ request }) => {
 			headers: { 'Set-Cookie': sessionCookie }
 		});
 	} catch {
-		return new Response(JSON.stringify({ detail: 'invalid auth token' }), { status: 401 });
+		return new Response(JSON.stringify({ detail: 'Can not save session cookie.' }), {
+			status: 401
+		});
 	}
 };

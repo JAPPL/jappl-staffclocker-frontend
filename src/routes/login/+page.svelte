@@ -8,31 +8,39 @@
 	import type { DecodedIdToken } from 'firebase-admin/auth';
 	import { setUser } from '../../lib/store/user';
 	import type { User } from 'firebase/auth';
+	import toast from 'svelte-french-toast';
 	let bottomAppBar: BottomAppBar;
+	let loading = false;
 
 	async function login() {
+		loading = true;
 		const userCredential: User | null = await loginWithGoogle();
 		const token: string = await userCredential?.getIdToken();
 		const name: string = userCredential?.displayName || '';
 		await fetch('/auth/session', {
 			method: 'POST',
 			headers: new Headers({ Authorization: `Bearer ${token}` })
-		}).then(async (response: Response) => {
-			if (response.ok) {
-				const user: DecodedIdToken | null = await response.json();
-				setUser({
-					name: name,
-					email: user?.email || '',
-					picture: user?.picture || ''
-				});
-				await goto('/timelog');
-			} else if (response.status == 500) {
-				console.log('internal server error');
-			} else {
-				const test: ErrorResponse = await response.json();
-				console.log(test.detail);
-			}
-		});
+		})
+			.then(async (response: Response) => {
+				if (response.ok) {
+					toast.success('Login successfully.');
+					const user: DecodedIdToken | null = await response.json();
+					setUser({
+						name: name,
+						email: user?.email || '',
+						picture: user?.picture || ''
+					});
+					await goto('/timelog');
+				} else if (response.status == 500) {
+					toast.error('Internal server error');
+				} else {
+					const error: ErrorResponse = await response.json();
+					toast.error(error.detail);
+				}
+			})
+			.finally(() => {
+				loading = false;
+			});
 	}
 </script>
 
@@ -61,6 +69,7 @@
 						"
 						variant="raised"
 						ripple={false}
+						disabled={loading}
 						on:click={login}
 					>
 						<img src="src/lib/images/google.png" class="google-logo" alt="logo" />

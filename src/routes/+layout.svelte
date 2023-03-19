@@ -1,10 +1,8 @@
 <script lang="ts">
+	import { Toaster } from 'svelte-french-toast';
 </script>
 
+<Toaster />
 <slot />
 
-<style>
-	/*:root {*/
-	/*	background-color: rgb(196, 220, 243);*/
-	/*}*/
-</style>
+<style></style>
