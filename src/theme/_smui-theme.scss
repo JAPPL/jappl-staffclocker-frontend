@@ -13,7 +13,8 @@
 
 html,
 body {
-	background-color: theme.$surface;
+	//background-color: theme.$surface;
+	background-image: linear-gradient(to right, #9dafe1, #76fde4);
 	color: theme.$on-surface;
 }
 
