@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			headers: { 'Set-Cookie': sessionCookie }
 		});
 	} catch {
-		return new Response(JSON.stringify({ detail: 'Can not save session cookie.' }), {
+		return new Response(JSON.stringify({ detail: 'Fail to set session cookie.' }), {
 			status: 401
 		});
 	}
