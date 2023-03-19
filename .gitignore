@@ -1,6 +1,5 @@
 .DS_Store
 node_modules
-.idea
 /build
 /.svelte-kit
 /package
@@ -13,5 +12,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 /static/smui.css
 /static/smui-dark.css
-firebase-config.json
 firebase-admin-config.json
+firebase-config.json
+.idea
