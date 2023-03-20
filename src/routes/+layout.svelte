@@ -3,13 +3,14 @@
 	import Tooltip, { Wrapper } from '@smui/tooltip';
 	import Drawer, { AppContent, Content } from '@smui/drawer';
 	import List, { Item } from '@smui/list';
-	import { Icon } from '@smui/common';
+	import Icon from 'mdi-svelte';
+	import { mdiHome } from '@mdi/js';
 
 	let open = true;
 </script>
 
 <Toaster />
-<div>
+<div class="container">
 	<Drawer variant="dismissible" bind:open>
 		<div class="center">
 			<img src="src/lib/images/logo-without-text.png" class="logo-size" alt="logo" />
@@ -18,8 +19,8 @@
 			<List>
 				<Item>
 					<Wrapper>
-						<Icon style="color: white" class="material-icons">home</Icon>
-						<Tooltip xPos="start">Dashboard.</Tooltip>
+						<Icon path={mdiHome} color="white" />
+						<Tooltip xPos="start">Dashboard</Tooltip>
 					</Wrapper>
 				</Item>
 			</List>
@@ -34,7 +35,7 @@
 </div>
 
 <style>
-	* :global(.mdc-drawer) {
+	.container :global(.mdc-drawer) {
 		height: 95%;
 		top: 10px;
 		left: 10px;
@@ -47,7 +48,7 @@
 		width: 57px;
 	}
 
-	* :global(.mdc-drawer-app-content) {
+	.container :global(.mdc-drawer-app-content) {
 		margin-left: 80px !important;
 	}
 
