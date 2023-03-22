@@ -1,38 +1,70 @@
 <script>
-	let src = 'logo_notext.png';
+	import { Toaster } from 'svelte-french-toast';
+	import Tooltip, { Wrapper } from '@smui/tooltip';
+	import Drawer, { AppContent, Content } from '@smui/drawer';
+	import List, { Item, Text } from '@smui/list';
+	import Icon from 'mdi-svelte';
+	import { mdiHome } from '@mdi/js';
+
+	let open = true;
 </script>
 
-<div class="sidenav center" style="text-align: center;">
-	<div style="width: 100%; height: 113px;">
-		<img style="height:100%" {src} alt="Logo" />
-	</div>
-	<div />
-</div>
-<div style="margin-left: 140px;">
-	<slot />
+<Toaster />
+<div class="container">
+	<Drawer variant="dismissible" bind:open>
+		<div class="center">
+			<img src="src/lib/images/logo-without-text.png" class="logo-size" alt="logo" />
+		</div>
+		<Content>
+			<List>
+				<Item style="display: flex; justify-content: center">
+					<Wrapper>
+						<Icon path={mdiHome} color="white" />
+						<Tooltip xPos="start">Dashboard</Tooltip>
+					</Wrapper>
+				</Item>
+			</List>
+		</Content>
+	</Drawer>
+
+	<AppContent>
+		<main class="main-content">
+			<slot />
+		</main>
+	</AppContent>
 </div>
 
 <style>
-	:root {
-		background-color: rgb(196, 220, 243);
-	}
-	.sidenav {
-		height: 100%;
-		position: fixed;
-		padding: 20px;
-		z-index: 1;
+	.container :global(.mdc-drawer) {
 		top: 0;
-		left: 0;
-		background-color: #130f42;
+		padding-top: 8px;
+		padding-bottom: 8px;
+		background: #130f42;
+		width: 70px;
 	}
+
+	.container:global(.mdc-drawer .mdc-deprecated-list-item__text) {
+		color: white;
+	}
+
+	.container :global(.mdc-drawer-app-content) {
+		margin-left: 70px !important;
+	}
+
+	.logo-size {
+		width: 40px;
+	}
+
 	.center {
-		text-align: center;
+		display: flex;
+		justify-content: center;
 	}
-	div {
-		border: 3px solid black;
-	}
-	div.figure {
-		border: 3px solid blue;
-		display: inline-block;
+
+	.main-content {
+		overflow: auto;
+		padding: 16px;
+		height: 100%;
+		box-sizing: border-box;
 	}
 </style>
+
