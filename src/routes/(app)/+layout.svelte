@@ -2,7 +2,7 @@
 	import { Toaster } from 'svelte-french-toast';
 	import Tooltip, { Wrapper } from '@smui/tooltip';
 	import Drawer, { AppContent, Content } from '@smui/drawer';
-	import List, { Item, Text } from '@smui/list';
+	import List, { Item } from '@smui/list';
 	import Icon from 'mdi-svelte';
 	import { mdiHome } from '@mdi/js';
 
@@ -67,4 +67,3 @@
 		box-sizing: border-box;
 	}
 </style>
-
