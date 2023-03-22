@@ -8,6 +8,9 @@
 	<div class="item2" id="rcorners1" style="margin: 30px 30px 30px 0px">
 		<h>This will display profile</h>
 	</div>
+	<div class="item3" id="rcorners1" style="margin-left: 30px; margin-right: 30px;">
+		<h>This will display profile</h>
+	</div>
 </div>
 
 <style>
@@ -31,13 +34,17 @@
 		grid-row-start: 1;
 		grid-row-end: 4;
 		grid-column-start: 1;
-		grid-column-end: 3;
+		grid-column-end: 5;
 	}
 	.item2 {
 		grid-row-start: 1;
 		grid-row-end: 4;
-		grid-column-start: 3;
-		grid-column-end: 4;
+		grid-column-start: 5;
+		grid-column-end: 6;
+	}
+	.item3 {
+		grid-column-start: 1;
+		grid-column-end: 6;
 	}
 	div {
 		/* border: 3px solid black; */

@@ -100,7 +100,7 @@
 	}
 
 	.container :global(.mdc-drawer-app-content) {
-		margin-left: 7% !important;
+		margin-left: 70px !important;
 	}
 
 	.logo-size {
@@ -115,6 +115,7 @@
 		overflow: auto;
 		height: 100vh;
 		padding: 30px 30px 30px 0;
+		margin: 0%;
 		box-sizing: border-box;
 	}
 </style>
