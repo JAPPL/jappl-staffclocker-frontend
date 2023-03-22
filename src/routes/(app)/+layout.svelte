@@ -59,11 +59,16 @@
 		display: flex;
 		justify-content: center;
 	}
-
 	.main-content {
 		overflow: auto;
-		padding: 16px;
-		height: 100%;
+		height: 100vh;
 		box-sizing: border-box;
 	}
+	/* div {
+		border: 3px solid black;
+	}
+	div.figure {
+		border: 3px solid blue;
+		display: inline-block;
+	} */
 </style>
