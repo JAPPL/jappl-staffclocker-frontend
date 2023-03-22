@@ -2,11 +2,11 @@
 	import Button, { Label } from '@smui/button';
 	import BottomAppBar, { Section } from '@smui-extra/bottom-app-bar';
 	import LayoutGrid, { Cell } from '@smui/layout-grid';
-	import { loginWithGoogle } from '../../lib/firebase/firebase-client';
+	import { loginWithGoogle } from '../../../lib/firebase/firebase-client';
 	import { goto } from '$app/navigation';
-	import type { ErrorResponse } from '../../lib/interface/error-response';
+	import type { ErrorResponse } from '../../../lib/interface/error-response';
 	import type { DecodedIdToken } from 'firebase-admin/auth';
-	import { setUser } from '../../lib/store/user';
+	import { setUser } from '../../../lib/store/user';
 	import type { User } from 'firebase/auth';
 	import toast from 'svelte-french-toast';
 	let bottomAppBar: BottomAppBar;
