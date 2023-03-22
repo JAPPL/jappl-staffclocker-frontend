@@ -44,7 +44,6 @@
 	}
 </script>
 
-<img src="src/lib/images/logo-dark.png" class="logo-size" alt="logo" />
 <div class="full-screen-size">
 	<div class="center">
 		<div class="login">
@@ -111,11 +110,6 @@
 
 	.bottom-app-margin :global(.smui-bottom-app-bar > .smui-bottom-app-bar__section) {
 		padding: 13px;
-	}
-
-	.logo-size {
-		width: 137px;
-		height: 100%;
 	}
 
 	.user-image-size {

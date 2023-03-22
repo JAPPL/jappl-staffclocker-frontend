@@ -1,15 +1,46 @@
-<body>
-	<div id="rcorners1">
-		<h>Airbus</h>
+<script lang="ts">
+</script>
+
+<div class="grid-container">
+	<div class="item1" id="rcorners1" style="margin: 30px;">
+		<h>This will display Clocking time</h>
 	</div>
-</body>
+	<div class="item2" id="rcorners1" style="margin: 30px 30px 30px 0px">
+		<h>This will display profile</h>
+	</div>
+</div>
 
 <style>
 	#rcorners1 {
 		border-radius: 20px;
 		background: white;
 		padding: 20px;
-		height: 150px;
+		height: 50vh;
+	}
+	.grid-container {
+		display: grid;
+		grid-template-columns: auto auto auto;
+		height: 100%;
+	}
+
+	.grid-container > div {
+		text-align: center;
+	}
+
+	.item1 {
+		grid-row-start: 1;
+		grid-row-end: 4;
+		grid-column-start: 1;
+		grid-column-end: 3;
+	}
+	.item2 {
+		grid-row-start: 1;
+		grid-row-end: 4;
+		grid-column-start: 3;
+		grid-column-end: 4;
+	}
+	div {
+		/* border: 3px solid black; */
 	}
 	/*
 #rcorners2 {
