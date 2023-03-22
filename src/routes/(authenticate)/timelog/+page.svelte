@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { userStore } from '../../lib/store/user.js';
+	import { userStore } from '../../../lib/store/user.js';
 </script>
 
 <div class="login centered">

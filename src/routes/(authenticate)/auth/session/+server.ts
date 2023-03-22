@@ -1,4 +1,4 @@
-import { createSessionCookie, verifyIdToken } from '../../../lib/firebase/firebaase-admin';
+import { createSessionCookie, verifyIdToken } from '../../../../lib/firebase/firebaase-admin';
 import type { RequestHandler } from '@sveltejs/kit';
 import type { DecodedIdToken } from 'firebase-admin/auth';
 
