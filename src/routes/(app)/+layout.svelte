@@ -63,12 +63,14 @@
 		<div class="center">
 			<img src="src/lib/images/logo-without-text.png" class="logo-size" alt="logo" />
 		</div>
-		<Content>
+		<Content class="test">
 			<List>
 				{#each menus as { path, icon, value, label }, index}
 					<Wrapper>
 						<Item
-							style="display: flex; justify-content: center"
+							style={`display: flex; justify-content: center; ${
+								active === value ? 'background-color: #51b198;' : ''
+							}`}
 							activated={active === value}
 							on:click={() => redirect(path, value)}
 						>
@@ -97,10 +99,6 @@
 		width: 70px;
 	}
 
-	.container:global(.mdc-drawer .mdc-deprecated-list-item__text) {
-		color: white;
-	}
-
 	.container :global(.mdc-drawer-app-content) {
 		margin-left: 7% !important;
 	}
@@ -118,11 +116,4 @@
 		height: 100vh;
 		box-sizing: border-box;
 	}
-	/* div {
-		border: 3px solid black;
-	}
-	div.figure {
-		border: 3px solid blue;
-		display: inline-block;
-	} */
 </style>
