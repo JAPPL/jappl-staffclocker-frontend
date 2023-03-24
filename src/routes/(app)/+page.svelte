@@ -1,11 +1,12 @@
 <script lang="ts">
+	import ClockYourTime from './ClockYourTime.svelte';
 </script>
 
 <div class="grid-container">
-	<div class="item1" id="rcorners1" style="margin: 30px;">
-		<h>This will display Clocking time</h>
+	<div class="item1 rcorners1" style="margin: 30px;">
+		<ClockYourTime />
 	</div>
-	<div class="item2" id="rcorners1" style="margin: 30px 30px 30px 0px">
+	<div class="item2 rcorners1" style="margin: 30px 30px 0px 0px">
 		<h>This will display profile</h>
 	</div>
 	<div class="item3" id="rcorners1" style="margin-left: 30px; margin-right: 30px;">
@@ -17,7 +18,13 @@
 	#rcorners1 {
 		border-radius: 20px;
 		background: white;
-		padding: 20px;
+		padding: 30px;
+		height: 50vh;
+	}
+	.rcorners1 {
+		border-radius: 20px;
+		background: white;
+		padding: 40px;
 		height: 50vh;
 	}
 	.grid-container {
@@ -29,7 +36,6 @@
 	.grid-container > div {
 		text-align: center;
 	}
-
 	.item1 {
 		grid-row-start: 1;
 		grid-row-end: 4;
