@@ -95,8 +95,6 @@
 </div>
 
 <style>
-	@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap');
-
 	.full-screen-size {
 		min-height: 80vh;
 		position: relative;
@@ -131,14 +129,10 @@
 
 	p {
 		color: #ffffff;
-		font-family: 'Inter', sans-serif;
-		font-weight: 400;
 	}
 
 	h1 {
 		color: #ffffff;
-		font-family: 'Inter', sans-serif;
-		font-weight: 800;
 		font-size: 32px;
 	}
 
