@@ -2,11 +2,10 @@
 	import LayoutGrid, { Cell } from '@smui/layout-grid';
 	import Textfield, { Input, Textarea } from '@smui/textfield';
 	import Select, { Option } from '@smui/select';
-	import Button, { Label, Icon } from '@smui/button';
 
 	let value = '';
 	let valueA: number | null = 1;
-	let valueB: number | null = 1;
+	let projectList: string[] | null[] = ['proj1', 'proj2', 'proj3'];
 	let valueC: number | null = 1;
 
 	function handleClick() {
@@ -15,7 +14,7 @@
 </script>
 
 <div class="container" style="height: 100%; margin: 0%;">
-	<Cell span={12} style="max-height: 40%;">
+	<Cell span={12} style="max-height: 45%; height: auto;">
 		<div style="height: 100%; display: flex; flex-flow: column;">
 			<div>
 				<h1>
@@ -25,7 +24,7 @@
 			</div>
 			<div id="rcorners1" style="overflow: auto">
 				<Textfield
-					style="width: 100%; height: 100%; overflow: auto;"
+					style="width: 100%; height: 100%;"
 					helperLine$style="width: 100%;"
 					input$placeholder="Describe your work"
 					textarea
@@ -65,10 +64,11 @@
 							<Select
 								style="width: 90%;"
 								key={(value) => `${value == null ? '' : value}`}
-								bind:value={valueB}
-								placeholder="Which Project"
+								bind:value
+								label="Which Project"
 							>
-								{#each [1, 2, 3, 4, 5, 6, 7, 8] as value}
+								<Option />
+								{#each projectList as value}
 									<Option {value}>{value}</Option>
 								{/each}
 							</Select>
@@ -115,17 +115,6 @@
 	</Cell>
 </div>
 
-<!-- <LayoutGrid>
-    <Cell span={12}>
-        <div class="demo-cell">Cell {3}</div>
-    </Cell>
-</LayoutGrid>
-
-<LayoutGrid>
-    <Cell span={12}>
-        <div class="demo-cell">Cell {4}</div>
-    </Cell>
-</LayoutGrid> -->
 <style>
 	@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap');
 
@@ -138,33 +127,33 @@
 		margin: 0%;
 		height: 100%;
 	}
-	:global(.mdc-notched-outline__leading) {
+	.container :global(.mdc-notched-outline__leading) {
 		border: 0px;
 	}
-	:global(.mdc-notched-outline__trailing) {
+	.container :global(.mdc-notched-outline__trailing) {
 		border: 0px;
 	}
-	:global(.mdc-notched-outline__notch) {
+	.container :global(.mdc-notched-outline__notch) {
 		border: 0px;
 	}
-	:global(.mdc-line-ripple::before) {
+	.container :global(.mdc-line-ripple::before) {
 		border-bottom-style: none;
 	}
-	:global(.mdc-line-ripple::after) {
+	.container :global(.mdc-line-ripple::after) {
 		border-bottom-style: none;
 	}
-	:global(.smui-select--standard .mdc-select__anchor) {
-		height: 50px;
+	.container :global(.smui-select--standard .mdc-select__anchor) {
+		height: 40px;
 	}
-	/* div > .mdc-select__anchor {
-
-    } */
+	.container :global(.mdc-text-field__resizer) {
+		resize: none;
+	}
 	.button {
 		border: none;
 		padding: 0px;
 		margin: 0%;
 		margin-bottom: 20px;
-		border-radius: 20px;
+		border-radius: 15px;
 		background: #51b198;
 		height: 100%;
 		vertical-align: middle;
@@ -174,20 +163,9 @@
 		margin: 0;
 		margin-bottom: 10px;
 		font-family: 'Inter', sans-serif;
-		font-size: 20px;
+		font-size: 16px;
 		text-align: left;
 		color: #130f42;
-	}
-	div > h2 {
-		margin: 0px;
-		padding-left: 20px;
-		font-family: 'Inter', sans-serif;
-		font-weight: 400;
-		font-size: 15px;
-		align-items: center;
-		display: flex;
-		height: 100%;
-		color: #bcbcbc;
 	}
 	button > h1 {
 		margin: 0;
@@ -195,16 +173,13 @@
 		font-size: 20px;
 		color: #130f42;
 	}
-	div {
-		/* border: 2px solid black; */
-	}
 	.logo-size {
 		font-size: 20px;
 		color: #130f42;
 	}
 	#rcorners1 {
-		margin-bottom: 20px;
-		border-radius: 20px;
+		margin-bottom: 30px;
+		border-radius: 7px;
 		border: 2px solid #130f42;
 		opacity: 55%;
 		flex-grow: 1;
@@ -212,17 +187,8 @@
 	#rcorners2 {
 		margin: 0%;
 		margin-bottom: 20px;
-		border-radius: 20px;
+		border-radius: 15px;
 		border: 2px solid rgba(19, 15, 66, 0.55);
-		height: 100%;
-		vertical-align: middle;
-		flex-grow: 1;
-	}
-	#button {
-		margin: 0%;
-		margin-bottom: 20px;
-		border-radius: 20px;
-		background: #51b198;
 		height: 100%;
 		vertical-align: middle;
 		flex-grow: 1;

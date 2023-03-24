@@ -24,7 +24,7 @@
 	.rcorners1 {
 		border-radius: 20px;
 		background: white;
-		padding: 40px;
+		padding: 35px;
 		height: 50vh;
 	}
 	.grid-container {
