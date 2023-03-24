@@ -1,12 +1,60 @@
-<script>
+<script lang="ts">
 	import { Toaster } from 'svelte-french-toast';
 	import Tooltip, { Wrapper } from '@smui/tooltip';
 	import Drawer, { AppContent, Content } from '@smui/drawer';
 	import List, { Item } from '@smui/list';
 	import Icon from 'mdi-svelte';
-	import { mdiHome } from '@mdi/js';
+	import {
+		mdiHome,
+		mdiCheckCircleOutline,
+		mdiFolderEdit,
+		mdiTimerSandComplete,
+		mdiAccountEdit
+	} from '@mdi/js';
+	import type { LayoutMenu } from '../../lib/interface/layout-menu';
+	import { goto } from '$app/navigation';
+
+	let active = '';
+
+	let menus: LayoutMenu[] = [
+		{
+			icon: mdiHome,
+			path: '/',
+			label: 'Dashboard',
+			value: 'home'
+		},
+		{
+			icon: mdiCheckCircleOutline,
+			path: '/paid',
+			label: 'Paid time log',
+			value: 'paid'
+		},
+		{
+			icon: mdiFolderEdit,
+			path: '/project-management',
+			label: 'Project Management',
+			value: 'pm'
+		},
+		{
+			icon: mdiTimerSandComplete,
+			path: '/timelog',
+			label: 'Time Log Management',
+			value: 'tm'
+		},
+		{
+			icon: mdiAccountEdit,
+			path: '/member-management',
+			label: 'Project Member Management',
+			value: 'pmm'
+		}
+	];
 
 	let open = true;
+
+	function redirect(path: string, value: string): void {
+		active = value;
+		goto(path);
+	}
 </script>
 
 <Toaster />
@@ -17,12 +65,18 @@
 		</div>
 		<Content>
 			<List>
-				<Item style="display: flex; justify-content: center">
+				{#each menus as { path, icon, value, label }, index}
 					<Wrapper>
-						<Icon path={mdiHome} color="white" />
-						<Tooltip xPos="start">Dashboard</Tooltip>
+						<Item
+							style="display: flex; justify-content: center"
+							activated={active === value}
+							on:click={() => redirect(path, value)}
+						>
+							<Icon path={icon} color="white" />
+						</Item>
+						<Tooltip>{label}</Tooltip>
 					</Wrapper>
-				</Item>
+				{/each}
 			</List>
 		</Content>
 	</Drawer>
