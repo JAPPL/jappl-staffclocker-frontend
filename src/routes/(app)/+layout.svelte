@@ -25,25 +25,25 @@
 		},
 		{
 			icon: mdiCheckCircleOutline,
-			path: '/paid',
+			path: '/timelog',
 			label: 'Paid time log',
 			value: 'paid'
 		},
 		{
-			icon: mdiFolderEdit,
-			path: '/project-management',
-			label: 'Project Management',
-			value: 'pm'
-		},
-		{
 			icon: mdiTimerSandComplete,
-			path: '/timelog',
+			path: '/',
 			label: 'Time Log Management',
 			value: 'tm'
 		},
 		{
+			icon: mdiFolderEdit,
+			path: '/',
+			label: 'Project Management',
+			value: 'pm'
+		},
+		{
 			icon: mdiAccountEdit,
-			path: '/member-management',
+			path: '/',
 			label: 'Project Member Management',
 			value: 'pmm'
 		}
