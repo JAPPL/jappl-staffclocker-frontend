@@ -6,7 +6,7 @@
 
 	export let loadingDialog = true;
 	export let openCreateDialog = false;
-	let projectName = '';
+	export let projectName = '';
 
 	async function closeHandler(e: CustomEvent<{ action: string }>) {
 		switch (e.detail.action) {
