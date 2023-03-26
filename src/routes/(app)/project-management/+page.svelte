@@ -2,6 +2,7 @@
 	import Card from '@smui/card';
 	import Icon from 'mdi-svelte';
 	import ProjectDialog from './ProjectDialog.svelte';
+	import ProjectDeleteConfirmation from './ProjectDeleteConfirmation.svelte';
 	import LinearProgress from '@smui/linear-progress';
 	import DataTable, { Head, Body, Row, Cell } from '@smui/data-table';
 	import { mdiFolderPlus, mdiFolderEdit, mdiDeleteEmpty } from '@mdi/js';
@@ -9,7 +10,6 @@
 	import type { ErrorResponse } from '../../../lib/interface/error-response';
 	import Button, { Label } from '@smui/button';
 	import { onMount } from 'svelte';
-	import Dialog, { Title, Content, Actions } from '@smui/dialog';
 	import toast from 'svelte-french-toast';
 	import { userStore } from '../../../lib/store/user.js';
 
@@ -41,28 +41,6 @@
 				loading = true;
 			}
 		});
-	}
-
-	async function deleteProject(project: Project | undefined) {
-		if (project) {
-			loading = false;
-			const token: string = $userStore.token || '';
-			await fetch(`api/project/delete/${project.projectId}`, {
-				method: 'DELETE',
-				headers: new Headers({ Authorization: `Bearer ${token}` })
-			}).then(async (response: Response) => {
-				if (!response.ok) {
-					const error: ErrorResponse = await response.json();
-					toast.error(error.detail);
-				} else {
-					toast.success(`Delete project ${project.projectName} successfully.`);
-					await loadProject();
-				}
-				selectedProjectForDelete = undefined;
-			});
-		} else {
-			toast.error('No project selected.');
-		}
 	}
 
 	function toggleCreateDialog(): void {
@@ -134,30 +112,11 @@
 	</Card>
 
 	<ProjectDialog bind:loadingDialog bind:openCreateDialog bind:projectName />
-	<Dialog
-		bind:open={openDeleteDialog}
-		scrimClickAction=""
-		escapeKeyAction=""
-		aria-labelledby="mandatory-title"
-		aria-describedby="mandatory-content"
-	>
-		<Title id="mandatory-title">Project Delete Confirmation</Title>
-		<Content id="mandatory-content">
-			Are you sure to delete project {selectedProjectForDelete?.projectName || 'N/A'}?
-		</Content>
-		<Actions>
-			<Button action="close">
-				<Label>Close</Label>
-			</Button>
-			<Button
-				color="secondary"
-				variant="unelevated"
-				on:click={deleteProject(selectedProjectForDelete)}
-			>
-				<Label>Confirm</Label>
-			</Button>
-		</Actions>
-	</Dialog>
+	<ProjectDeleteConfirmation
+		bind:openDeleteDialog
+		bind:selectedProjectForDelete
+		on:loadProject={loadProject}
+	/>
 </div>
 
 <style lang="css">

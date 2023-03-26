@@ -8,7 +8,7 @@
 	export let openCreateDialog = false;
 	export let projectName = '';
 
-	async function closeHandler(e: CustomEvent<{ action: string }>) {
+	async function closeHandler(e: CustomEvent<{ action: string }>): Promise<void> {
 		switch (e.detail.action) {
 			case 'submit':
 				openCreateDialog = true;
