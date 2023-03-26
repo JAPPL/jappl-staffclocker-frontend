@@ -111,7 +111,12 @@
 		</div>
 	</Card>
 
-	<ProjectDialog bind:loadingDialog bind:openCreateDialog bind:projectName />
+	<ProjectDialog
+		bind:loadingDialog
+		bind:openCreateDialog
+		bind:projectName
+		on:loadProject={loadProject}
+	/>
 	<ProjectDeleteConfirmation
 		bind:openDeleteDialog
 		bind:selectedProjectForDelete

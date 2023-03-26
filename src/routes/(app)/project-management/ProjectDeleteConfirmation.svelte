@@ -33,30 +33,32 @@
 	}
 </script>
 
-<Dialog
-	bind:open={openDeleteDialog}
-	scrimClickAction=""
-	escapeKeyAction=""
-	aria-labelledby="mandatory-title"
-	aria-describedby="mandatory-content"
->
-	<Title id="mandatory-title">Project Delete Confirmation</Title>
-	<Content id="mandatory-content">
-		Are you sure to delete project {selectedProjectForDelete?.projectName || 'N/A'}?
-	</Content>
-	<Actions>
-		<Button action="close">
-			<Label>Close</Label>
-		</Button>
-		<Button
-			color="secondary"
-			variant="unelevated"
-			on:click={deleteProject(selectedProjectForDelete)}
-		>
-			<Label>Confirm</Label>
-		</Button>
-	</Actions>
-</Dialog>
+<div>
+	<Dialog
+		bind:open={openDeleteDialog}
+		scrimClickAction=""
+		escapeKeyAction=""
+		aria-labelledby="mandatory-title"
+		aria-describedby="mandatory-content"
+	>
+		<Title id="mandatory-title">Project Delete Confirmation</Title>
+		<Content id="mandatory-content">
+			Are you sure to delete project {selectedProjectForDelete?.projectName || 'N/A'}?
+		</Content>
+		<Actions>
+			<Button action="close">
+				<Label>Close</Label>
+			</Button>
+			<Button
+				color="secondary"
+				variant="unelevated"
+				on:click={deleteProject(selectedProjectForDelete)}
+			>
+				<Label>Confirm</Label>
+			</Button>
+		</Actions>
+	</Dialog>
+</div>
 
 <style lang="css">
 </style>
