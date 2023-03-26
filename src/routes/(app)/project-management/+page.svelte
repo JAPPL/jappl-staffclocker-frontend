@@ -5,13 +5,57 @@
 	import LinearProgress from '@smui/linear-progress';
 	import DataTable, { Head, Body, Row, Cell } from '@smui/data-table';
 	import { mdiFolderPlus, mdiFolderEdit, mdiDeleteEmpty } from '@mdi/js';
+	import type { Project } from '../../../lib/interface/project';
+	import type { ErrorResponse } from '../../../lib/interface/error-response';
 	import Button, { Label } from '@smui/button';
+	import { onMount } from 'svelte';
+	import toast from 'svelte-french-toast';
+	import { userStore } from '../../../lib/store/user.js';
 
 	let loading = false;
 	let loadingDialog = true;
-	let openCreateDialog = true;
+	let openCreateDialog = false;
+	let projectList: Project[] = [];
 
 	let projectName = '';
+
+	onMount(async () => {
+		await loadProject();
+	});
+
+	async function loadProject(): Promise<void> {
+		loading = false;
+		const token: string = $userStore.token || '';
+		await fetch('api/project/', {
+			method: 'GET',
+			headers: new Headers({ Authorization: `Bearer ${token}` })
+		}).then(async (response: Response) => {
+			if (!response.ok) {
+				const error: ErrorResponse = await response.json();
+				toast.error(error.detail);
+			} else {
+				projectList = await response.json();
+				loading = true;
+			}
+		});
+	}
+
+	async function deleteProject(project: Project) {
+		loading = false;
+		const token: string = $userStore.token || '';
+		await fetch(`api/project/delete/${project.projectId}`, {
+			method: 'DELETE',
+			headers: new Headers({ Authorization: `Bearer ${token}` })
+		}).then(async (response: Response) => {
+			if (!response.ok) {
+				const error: ErrorResponse = await response.json();
+				toast.error(error.detail);
+			} else {
+				toast.success(`Delete project ${project.projectName} successfully."`);
+				await loadProject();
+			}
+		});
+	}
 
 	function toggleDialog(): void {
 		openCreateDialog = !openCreateDialog;
@@ -35,27 +79,25 @@
 						<Cell numeric>ID</Cell>
 						<Cell style="width: 90%;">Name</Cell>
 						<Cell />
-						<Cell />
 					</Row>
 				</Head>
 				<Body>
-					<!--{#each items as item (item.id)}-->
-					<Row>
-						<Cell numeric>1</Cell>
-						<Cell>test</Cell>
-						<Cell>test</Cell>
-						<Cell>
-							<Button disabled={!loading}>
-								<Icon path={mdiFolderEdit} />
-								<Label style="margin-left: 5px">Edit</Label>
-							</Button>
-							<Button disabled={!loading}>
-								<Icon path={mdiDeleteEmpty} />
-								<Label style="margin-left: 5px">Delete</Label>
-							</Button>
-						</Cell>
-					</Row>
-					<!--{/each}-->
+					{#each projectList as project}
+						<Row>
+							<Cell numeric>{project.projectId}</Cell>
+							<Cell>{project.projectName}</Cell>
+							<Cell>
+								<Button disabled={!loading}>
+									<Icon path={mdiFolderEdit} />
+									<Label style="margin-left: 5px">Edit</Label>
+								</Button>
+								<Button disabled={!loading} on:click={deleteProject(project)}>
+									<Icon path={mdiDeleteEmpty} />
+									<Label style="margin-left: 5px">Delete</Label>
+								</Button>
+							</Cell>
+						</Row>
+					{/each}
 				</Body>
 
 				<LinearProgress

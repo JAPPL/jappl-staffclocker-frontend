@@ -28,7 +28,8 @@
 					setUser({
 						name: name,
 						email: user?.email || '',
-						picture: user?.picture || ''
+						picture: user?.picture || '',
+						token: token
 					});
 					await goto('/timelog');
 				} else if (response.status == 500) {

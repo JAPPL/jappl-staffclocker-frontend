@@ -5,5 +5,10 @@ export default defineConfig({
 	plugins: [sveltekit()],
 	test: {
 		include: ['src/**/*.{timelog,spec}.{js,ts}']
+	},
+	server: {
+		proxy: {
+			'/api': 'http://localhost:8000'
+		}
 	}
 });

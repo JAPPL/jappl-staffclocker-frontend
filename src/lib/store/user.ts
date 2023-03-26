@@ -10,7 +10,8 @@ export const userStore: Writable<UserStore> = persisted<UserStore>(
 		: {
 				name: null,
 				email: null,
-				picture: null
+				picture: null,
+				token: null
 		  }
 );
 
