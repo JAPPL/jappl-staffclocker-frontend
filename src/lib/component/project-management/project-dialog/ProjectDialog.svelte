@@ -83,6 +83,7 @@
 				}
 				dispatch('loadProject', true);
 				$projectName.value = '';
+				$projectId.value = 0;
 				toast.success('Edit project successfully.');
 				openCreateDialog = false;
 			})
