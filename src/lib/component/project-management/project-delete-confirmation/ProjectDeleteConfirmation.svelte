@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { Project } from '../../../lib/interface/project';
-	import type { ErrorResponse } from '../../../lib/interface/error-response';
+	import type { Project } from '../../../interface/project';
+	import type { ErrorResponse } from '../../../interface/error-response';
 	import Button, { Label } from '@smui/button';
 	import Dialog, { Title, Content, Actions } from '@smui/dialog';
 	import toast from 'svelte-french-toast';
-	import { userStore } from '../../../lib/store/user.js';
+	import { userStore } from '../../../store/user.js';
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();

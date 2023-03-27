@@ -5,18 +5,19 @@
 	import Button, { Label } from '@smui/button';
 	import { form, field } from 'svelte-forms';
 	import { required } from 'svelte-forms/validators';
-	import { userStore } from '../../../lib/store/user';
-	import type { ErrorResponse } from '../../../lib/interface/error-response';
+	import { userStore } from '../../../store/user';
+	import type { ErrorResponse } from '../../../interface/error-response';
 	import toast from 'svelte-french-toast';
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
 
-	const projectName = field('projectName', '', [required()]);
-	const projectForm = form(projectName);
-
 	export let loadingDialog = true;
 	export let openCreateDialog = false;
+	export let projectName = field('projectName', '', [required()]);
+	export let projectId = field('projectId', 0);
+	export let projectForm = form(projectName, projectId);
+	export let isEdit = false;
 
 	async function closeHandler(e: CustomEvent<{ action: string }>): Promise<void> {
 		switch (e.detail.action) {
@@ -26,6 +27,7 @@
 				break;
 			case 'close':
 				$projectName.value = '';
+				isEdit = false;
 		}
 	}
 
@@ -40,31 +42,64 @@
 		}
 	}
 
+	async function createProject(): Promise<void> {
+		loadingDialog = false;
+		const token: string = $userStore.token || '';
+		let formData: FormData = new FormData();
+		formData.append('project_name', $projectName.value);
+		await fetch('api/project/create/', {
+			method: 'POST',
+			headers: new Headers({ Authorization: `Bearer ${token}` }),
+			body: formData
+		})
+			.then(async (response: Response) => {
+				if (!response.ok) {
+					return Promise.reject(response);
+				}
+				dispatch('loadProject', true);
+				$projectName.value = '';
+				toast.success('Create project successfully.');
+				openCreateDialog = false;
+			})
+			.catch(async (errorResponse: Response) => {
+				await handleErrorResponse(errorResponse);
+			})
+			.finally(() => (loadingDialog = true));
+	}
+
+	async function editProject(): Promise<void> {
+		loadingDialog = false;
+		const token: string = $userStore.token || '';
+		let formData: FormData = new FormData();
+		formData.append('project_name', $projectName.value);
+		await fetch(`api/project/update/${$projectId.value}`, {
+			method: 'PUT',
+			headers: new Headers({ Authorization: `Bearer ${token}` }),
+			body: formData
+		})
+			.then(async (response: Response) => {
+				if (!response.ok) {
+					return Promise.reject(response);
+				}
+				dispatch('loadProject', true);
+				$projectName.value = '';
+				toast.success('Edit project successfully.');
+				openCreateDialog = false;
+			})
+			.catch(async (errorResponse: Response) => {
+				await handleErrorResponse(errorResponse);
+			})
+			.finally(() => (loadingDialog = true));
+	}
+
 	async function submitProjectForm(): Promise<void> {
 		await projectForm.validate();
 		if ($projectForm.valid) {
-			loadingDialog = false;
-			const token: string = $userStore.token || '';
-			let formData: FormData = new FormData();
-			formData.append('project_name', $projectName.value);
-			await fetch('api/project/create/', {
-				method: 'POST',
-				headers: new Headers({ Authorization: `Bearer ${token}` }),
-				body: formData
-			})
-				.then(async (response: Response) => {
-					if (!response.ok) {
-						return Promise.reject(response);
-					}
-					dispatch('loadProject', true);
-					$projectName.value = '';
-					toast.success('Create project successfully.');
-					openCreateDialog = false;
-				})
-				.catch(async (errorResponse: Response) => {
-					await handleErrorResponse(errorResponse);
-				})
-				.finally(() => (loadingDialog = true));
+			if (!isEdit) {
+				await createProject();
+			} else {
+				await editProject();
+			}
 		}
 	}
 </script>
@@ -79,7 +114,7 @@
 		on:SMUIDialog:closed={closeHandler}
 		surface$style="min-width: calc(100vw - 60vw); max-width: calc(100vw - 100px);"
 	>
-		<Title id="mandatory-title">Create project</Title>
+		<Title id="mandatory-title">{isEdit ? 'Edit' : 'Create'} project</Title>
 		{#if loadingDialog}
 			<div class="dialog-divider" />
 		{/if}

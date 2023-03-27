@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Card from '@smui/card';
 	import Icon from 'mdi-svelte';
-	import ProjectDialog from './ProjectDialog.svelte';
-	import ProjectDeleteConfirmation from './ProjectDeleteConfirmation.svelte';
+	import ProjectDialog from '../../../lib/component/project-management/project-dialog/ProjectDialog.svelte';
+	import ProjectDeleteConfirmation from '../../../lib/component/project-management/project-delete-confirmation/ProjectDeleteConfirmation.svelte';
 	import LinearProgress from '@smui/linear-progress';
 	import DataTable, { Head, Body, Row, Cell } from '@smui/data-table';
 	import { mdiFolderPlus, mdiFolderEdit, mdiDeleteEmpty } from '@mdi/js';
@@ -12,6 +12,8 @@
 	import { onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
 	import { userStore } from '../../../lib/store/user.js';
+	import { form, field } from 'svelte-forms';
+	import { required } from 'svelte-forms/validators';
 
 	let loading = false;
 	let loadingDialog = true;
@@ -20,11 +22,23 @@
 	let projectList: Project[] = [];
 	let selectedProjectForDelete: Project | undefined;
 
-	let projectName = '';
+	let projectName = field('projectName', '', [required()]);
+	let projectId = field('projectId', 0);
+	let projectForm = form(projectName, projectId);
+	let isEdit = false;
 
 	onMount(async () => {
 		await loadProject();
 	});
+
+	async function handleErrorResponse(response: Response): Promise<void> {
+		if (response.status == 500) {
+			toast.error('Internal server error.');
+		} else {
+			let err: ErrorResponse = await response.json();
+			toast.error(err.detail);
+		}
+	}
 
 	async function loadProject(): Promise<void> {
 		loading = false;
@@ -32,22 +46,32 @@
 		await fetch('api/project/', {
 			method: 'GET',
 			headers: new Headers({ Authorization: `Bearer ${token}` })
-		}).then(async (response: Response) => {
-			if (!response.ok) {
-				const error: ErrorResponse = await response.json();
-				toast.error(error.detail);
-			} else {
-				projectList = await response.json();
-				loading = true;
-			}
-		});
+		})
+			.then(async (response: Response) => {
+				if (!response.ok) {
+					return Promise.reject(response);
+				} else {
+					projectList = await response.json();
+					loading = true;
+				}
+			})
+			.catch((response: Response) => {
+				handleErrorResponse(response);
+			});
 	}
 
 	function toggleCreateDialog(): void {
 		openCreateDialog = !openCreateDialog;
 	}
 
-	function toggleDeleteDialog(project: Project) {
+	function toggleEditDialog(project: Project): void {
+		isEdit = true;
+		$projectName.value = project.projectName;
+		$projectId.value = project.projectId;
+		openCreateDialog = !openCreateDialog;
+	}
+
+	function toggleDeleteDialog(project: Project): void {
 		selectedProjectForDelete = project;
 		openDeleteDialog = true;
 	}
@@ -71,6 +95,7 @@
 		<div class="table-container">
 			<DataTable table$aria-label="Project List" style="width: 100%;">
 				<Head>
+					<title>Project list</title>
 					<Row>
 						<Cell numeric>ID</Cell>
 						<Cell style="width: 90%;">Name</Cell>
@@ -83,7 +108,12 @@
 							<Cell numeric>{project.projectId}</Cell>
 							<Cell>{project.projectName}</Cell>
 							<Cell>
-								<Button disabled={!loading}>
+								<Button
+									disabled={!loading}
+									on:click={() => {
+										toggleEditDialog(project);
+									}}
+								>
 									<Icon path={mdiFolderEdit} />
 									<Label style="margin-left: 5px">Edit</Label>
 								</Button>
@@ -115,6 +145,9 @@
 		bind:loadingDialog
 		bind:openCreateDialog
 		bind:projectName
+		bind:projectForm
+		bind:projectId
+		bind:isEdit
 		on:loadProject={loadProject}
 	/>
 	<ProjectDeleteConfirmation
