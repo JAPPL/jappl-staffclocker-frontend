@@ -23,17 +23,6 @@ export const createSessionCookie = async (token: string, maxAge: number): Promis
 	return `session=${sessionCookie}; SameSite=Strict; path=/; HttpOnly; Secure; Max-Age=${maxAge}`;
 };
 
-export const getCookieValue = (cookie: string | null): string | null => {
-	if (!cookie) {
-		return null;
-	}
-	const [session, cookieValue] = cookie.split('=');
-	if (session !== 'session' || !cookieValue) {
-		return null;
-	}
-	return cookieValue;
-};
-
 export const getIdTokenFromSessionCookie = async (
 	sessionCookie: string | null
 ): Promise<DecodedIdToken | null> => {

@@ -11,10 +11,14 @@
 	$error: color-palette.$red-900
 );
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap');
+
 html,
 body {
 	background-image: linear-gradient(to right, #9dafe1, #76fde4);
 	color: theme.$on-surface;
+	font-family: 'Inter', sans-serif;
+	font-weight: 400;
 }
 
 a {
