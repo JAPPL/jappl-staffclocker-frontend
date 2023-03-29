@@ -11,6 +11,9 @@ export default defineConfig({
 		coverage: {
 			provider: 'c8',
 			reporter: ['lcov', 'text']
+		},
+		deps: {
+			inline: [`@sveltejs/kit`]
 		}
 	},
 	server: {
