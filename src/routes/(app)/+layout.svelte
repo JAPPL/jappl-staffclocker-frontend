@@ -37,7 +37,7 @@
 		},
 		{
 			icon: mdiFolderEdit,
-			path: '/',
+			path: '/project-management',
 			label: 'Project Management',
 			value: 'pm'
 		},
@@ -114,6 +114,7 @@
 	.main-content {
 		overflow: auto;
 		height: 100vh;
+		padding: 30px 30px 30px 0;
 		box-sizing: border-box;
 	}
 </style>
