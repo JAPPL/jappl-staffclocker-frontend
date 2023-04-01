@@ -81,7 +81,8 @@
 	let message = field('message', '', [required()]);
 	let id = field('id', 0);
 	let hour_spent = field('hour_spent', 0, [required()]);
-	let timeLogForm = form(message, hour_spent, id);
+	let projectId = field('projectId', 0);
+	let timeLogForm = form(message, hour_spent, id, projectId);
 
 	let sort: keyof TimeLog = 'timestamp';
 	let sortDirection: Lowercase<keyof typeof SortValue> = 'ascending';
@@ -95,6 +96,7 @@
 		$id.value = timelog.id;
 		$message.value = timelog.message;
 		$hour_spent.value = timelog.hourSpent;
+		$projectId.value = timelog.projectId.projectId;
 		openEditDialog = !openEditDialog;
 	}
 
@@ -192,18 +194,35 @@
 								/>
 							{/if}
 						</Cell>
-						<IconButton
-							class="material-icons"
-							on:click={() => {
-								toggleEditDialog(timelog);
-							}}>edit</IconButton
-						>
-						<IconButton
-							class="material-icons"
-							on:click={() => {
-								toggleDeleteDialog(timelog);
-							}}>delete</IconButton
-						>
+						{#if timelog.approved}
+							<IconButton
+								class="material-icons"
+								on:click={() => {
+									toggleEditDialog(timelog);
+								}}
+								disabled>edit</IconButton
+							>
+							<IconButton
+								class="material-icons"
+								on:click={() => {
+									toggleDeleteDialog(timelog);
+								}}
+								disabled>delete</IconButton
+							>
+						{:else}
+							<IconButton
+								class="material-icons"
+								on:click={() => {
+									toggleEditDialog(timelog);
+								}}>edit</IconButton
+							>
+							<IconButton
+								class="material-icons"
+								on:click={() => {
+									toggleDeleteDialog(timelog);
+								}}>delete</IconButton
+							>
+						{/if}
 					</Row>
 				{/each}
 			</Body>
@@ -215,6 +234,7 @@
 		bind:message
 		bind:timeLogForm
 		bind:id
+		bind:projectId
 		bind:hour_spent
 		on:loadTimeLog={loadTimeLog}
 	/>

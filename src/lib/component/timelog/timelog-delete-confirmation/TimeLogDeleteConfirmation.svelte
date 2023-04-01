@@ -11,6 +11,19 @@
 	export let openDeleteDialog = false;
 	export let selectedTimeLogForDelete: TimeLog | undefined;
 
+	async function handleErrorResponse(response: Response): Promise<void> {
+		if (response.status == 400) {
+			toast.error('Message is not given.');
+		} else if (response.status == 500) {
+			toast.error('Internal server error.');
+		} else if (response.status == 401) {
+			toast.error('Unauthorized. You are not allowed to edit this timelog.');
+		} else {
+			let err: ErrorResponse = await response.json();
+			toast.error(err.detail);
+		}
+	}
+
 	async function deleteTimeLog(timelog: TimeLog | undefined) {
 		if (timelog) {
 			const token: string = $userStore.token || '';
@@ -19,8 +32,7 @@
 				headers: new Headers({ Authorization: `Bearer ${token}` })
 			}).then(async (response: Response) => {
 				if (!response.ok) {
-					const error: ErrorResponse = await response.json();
-					toast.error(error.detail);
+					await handleErrorResponse(response);
 				} else {
 					toast.success(`Delete timelog ${timelog.id} successfully.`);
 					dispatch('loadTimeLog', true);

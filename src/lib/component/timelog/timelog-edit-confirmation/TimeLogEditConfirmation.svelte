@@ -16,18 +16,21 @@
 	export let message = field('message', '', [required()]);
 	export let id = field('id', 0);
 	export let hour_spent = field('hour_spent', 0, [required()]);
-	export let timeLogForm = form(message, hour_spent, id);
+	export let projectId = field('projectId', 0);
+	export let timeLogForm = form(message, hour_spent, id, projectId);
 	export let openEditDialog = false;
 
 	async function closeHandler(e: CustomEvent<{ action: string }>): Promise<void> {
 		switch (e.detail.action) {
 			case 'submit':
-				openEditDialog = true;
+				openEditDialog = false;
 				await submitTimeLogForm();
 				break;
 			case 'close':
 				$message.value = '';
 				$hour_spent.value = 0;
+				$projectId.value = 0;
+				openEditDialog = false;
 		}
 	}
 
@@ -50,6 +53,8 @@
 		let formData: FormData = new FormData();
 		formData.append('message', $message.value);
 		formData.append('hour_spent', $hour_spent.value);
+		formData.append('projectId', $projectId.value);
+		console.log(formData);
 		await fetch(`api/timelog/update/${$id.value}`, {
 			method: 'PUT',
 			headers: new Headers({ Authorization: `Bearer ${token}` }),
@@ -63,6 +68,7 @@
 				$message.value = '';
 				$id.value = 0;
 				$hour_spent.value = 0;
+				$projectId.value = 0;
 				toast.success('Edit timelog successfully.');
 			})
 			.catch(async (errorResponse: Response) => {
