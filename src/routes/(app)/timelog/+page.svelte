@@ -25,6 +25,10 @@
 		}
 	}
 
+	function getPaidTimeLogs(timelogs: TimeLog[]): TimeLog[] {
+		return timelogs.filter((timelog) => timelog.paid === true);
+	}
+
 	async function loadTimeLog(): Promise<void> {
 		loading = false;
 		const token: string = $userStore.token || '';
@@ -36,6 +40,7 @@
 					return Promise.reject(response);
 				} else {
 					timelogs = await response.json();
+					timelogs = getPaidTimeLogs(timelogs);
 					filteredTimeLogs = timelogs;
 					loading = true;
 				}

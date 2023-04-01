@@ -5,4 +5,5 @@ export interface TimeLog {
 	projectId: number;
 	hourSpent: number;
 	approved: boolean;
+	paid: boolean;
 }
