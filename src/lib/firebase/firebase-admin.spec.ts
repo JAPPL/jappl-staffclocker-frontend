@@ -1,6 +1,5 @@
 import { it, expect, describe, beforeEach } from 'vitest';
 import { getAdminApp } from './firebaase-admin';
-import { signInWithPopup } from 'firebase/auth';
 import type { App } from 'firebase-admin/app';
 
 describe('Firebase Admin', () => {

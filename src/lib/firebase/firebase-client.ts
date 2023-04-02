@@ -23,9 +23,6 @@ export const getClientApp = (): FirebaseApp => {
 export const loginWithGoogle = async (): Promise<User | null> => {
 	const auth: FirebaseAuth = getAuth(getClientApp());
 	const provider: GoogleAuthProvider = new GoogleAuthProvider();
-	provider.setCustomParameters({
-		login_hint: 'user@example.com'
-	});
 	await signInWithPopup(auth, provider);
 	return auth.currentUser;
 };
