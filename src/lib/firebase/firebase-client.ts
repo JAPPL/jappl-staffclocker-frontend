@@ -1,4 +1,4 @@
-import firebaseConfig from '../config/firebase-config.json';
+import { firebaseClientConfig } from '../config/firebase-config';
 import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
 import {
 	getAuth,
@@ -14,7 +14,7 @@ export const getClientApp = (): FirebaseApp => {
 	if (getApps().length) {
 		return getApp();
 	}
-	const app: FirebaseApp = initializeApp(firebaseConfig);
+	const app: FirebaseApp = initializeApp(firebaseClientConfig);
 	const auth: FirebaseAuth = getAuth(app);
 	setPersistence(auth, inMemoryPersistence);
 	return app;
