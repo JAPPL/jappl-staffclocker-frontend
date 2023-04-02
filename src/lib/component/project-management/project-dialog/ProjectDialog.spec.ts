@@ -3,8 +3,18 @@ import ProjectDialog from './ProjectDialog.svelte';
 import { describe } from 'vitest';
 
 describe('ProjectDeleteConfirmation', async () => {
-	it('Initialize component', () => {
+	it('should render create project dialog', () => {
 		const projectDeleteConfirmationRender: RenderResult<ProjectDialog> = render(ProjectDialog);
-		expect(projectDeleteConfirmationRender).toBeTruthy();
+		expect(projectDeleteConfirmationRender.getByText('Create project')).toBeInTheDocument();
+	});
+
+	it('should render edit project dialog', () => {
+		const props = {
+			isEdit: true
+		};
+		const projectDeleteConfirmationRender: RenderResult<ProjectDialog> = render(ProjectDialog, {
+			...props
+		});
+		expect(projectDeleteConfirmationRender.getByText('Edit project')).toBeInTheDocument();
 	});
 });

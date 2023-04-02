@@ -115,7 +115,9 @@
 		on:SMUIDialog:closed={closeHandler}
 		surface$style="min-width: calc(100vw - 60vw); max-width: calc(100vw - 100px);"
 	>
-		<Title id="mandatory-title">{isEdit ? 'Edit' : 'Create'} project</Title>
+		<Title id="mandatory-title" data-testid="mandatory-title"
+			>{isEdit ? 'Edit' : 'Create'} project</Title
+		>
 		{#if loadingDialog}
 			<div class="dialog-divider" />
 		{/if}
