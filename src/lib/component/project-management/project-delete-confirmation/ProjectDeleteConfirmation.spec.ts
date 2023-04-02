@@ -1,10 +1,11 @@
-import { fireEvent, render, screen } from '@testing-library/svelte';
+import { fireEvent, render, type RenderResult, screen, waitFor } from '@testing-library/svelte';
 import ProjectDeleteConfirmation from './ProjectDeleteConfirmation.svelte';
 import { beforeEach, describe } from 'vitest';
 import type { Project } from '../../../interface/project';
-import toast from 'svelte-french-toast';
 import type { UserStore } from '../../../interface/user-store';
 import { setUser } from '../../../store/user.js';
+import type { ErrorResponse } from '../../../interface/error-response';
+import toast from 'svelte-french-toast';
 
 global.fetch = vi.fn();
 
@@ -14,11 +15,11 @@ const user: UserStore = {
 	email: null,
 	name: 'Test user',
 	picture: '',
-	token: 'token'
+	token: ''
 };
 
 describe('ProjectDeleteConfirmation', async () => {
-	function createFetchResponse(data: any, status: number) {
+	function createFetchResponse(data: Project | ErrorResponse | null, status: number) {
 		return {
 			json: () => new Promise((resolve) => resolve(data)),
 			status: status,
@@ -42,8 +43,10 @@ describe('ProjectDeleteConfirmation', async () => {
 	});
 
 	describe('ProjectDeleteConfirmation with project information given', async () => {
+		let component: RenderResult<ProjectDeleteConfirmation>;
+
 		beforeEach(async () => {
-			render(ProjectDeleteConfirmation, { selectedProjectForDelete: project });
+			component = render(ProjectDeleteConfirmation, { selectedProjectForDelete: project });
 			setUser(user);
 		});
 
@@ -58,15 +61,23 @@ describe('ProjectDeleteConfirmation', async () => {
 			expect(screen.getByTestId('delete-confirm-button')).toBeInTheDocument();
 		});
 
-		it('should call delete function when trigger button event', () => {
-			// TODO: test toast
+		it('should call delete function when trigger button event', async () => {
 			fetch.mockResolvedValue(createFetchResponse(null, 200));
+			const mockEventFunction = vi.fn();
+			component.component.$on('loadProject', mockEventFunction);
 			vi.spyOn(toast, 'success');
+
 			const confirmButton = screen.getByTestId('delete-confirm-button');
-			fireEvent.click(confirmButton);
+			await fireEvent.click(confirmButton);
 			expect(fetch).toHaveBeenCalledWith(`api/project/delete/${project.projectId}`, {
 				method: 'DELETE',
 				headers: new Headers({ Authorization: `Bearer ${user.token}` })
+			});
+			await waitFor(() => {
+				expect(mockEventFunction).toHaveBeenCalledTimes(1);
+				expect(toast.success).toHaveBeenCalledWith(
+					`Delete project ${project.projectName} successfully.`
+				);
 			});
 		});
 	});
