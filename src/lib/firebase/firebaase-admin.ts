@@ -21,7 +21,6 @@ export const createSessionCookie = async (token: string, maxAge: number): Promis
 	const expiresIn: number = maxAge * 1000;
 	const auth: Auth = getAuth(getAdminApp());
 	const sessionCookie: string = await auth.createSessionCookie(token, { expiresIn });
-	console.log(sessionCookie);
 	return `session=${sessionCookie}; SameSite=Strict; path=/; HttpOnly; Secure; Max-Age=${maxAge}`;
 };
 
