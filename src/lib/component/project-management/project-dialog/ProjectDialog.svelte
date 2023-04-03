@@ -115,14 +115,17 @@
 		on:SMUIDialog:closed={closeHandler}
 		surface$style="min-width: calc(100vw - 60vw); max-width: calc(100vw - 100px);"
 	>
-		<Title id="mandatory-title">{isEdit ? 'Edit' : 'Create'} project</Title>
+		<Title id="mandatory-title" data-testid="mandatory-title"
+			>{isEdit ? 'Edit' : 'Create'} project</Title
+		>
 		{#if loadingDialog}
 			<div class="dialog-divider" />
 		{/if}
-		<LinearProgress bind:closed={loadingDialog} indeterminate />
+		<LinearProgress data-testid="load-bar" bind:closed={loadingDialog} indeterminate />
 		<Content id="mandatory-content">
 			<Textfield
 				disabled={!loadingDialog}
+				data-testid="project-field"
 				label="Project Name"
 				variant="outlined"
 				invalid={!$projectForm.valid}
@@ -138,10 +141,16 @@
 		</Content>
 
 		<Actions>
-			<Button action="close">
+			<Button action="close" data-testid="close-button">
 				<Label>Close</Label>
 			</Button>
-			<Button color="secondary" variant="unelevated" action="submit" disabled={!$projectForm.valid}>
+			<Button
+				data-testid="confirm-button"
+				color="secondary"
+				variant="unelevated"
+				action="submit"
+				disabled={!$projectForm.valid}
+			>
 				<Label>Confirm</Label>
 			</Button>
 		</Actions>

@@ -10,6 +10,7 @@ export default defineConfig({
 		include: ['src/**/*.{timelog,spec}.{js,ts}'],
 		coverage: {
 			provider: 'c8',
+			exclude: ['src/**/*-config.ts', 'src/**/*.{timelog,spec}.{js,ts}'],
 			reporter: ['lcov', 'text']
 		},
 		deps: {

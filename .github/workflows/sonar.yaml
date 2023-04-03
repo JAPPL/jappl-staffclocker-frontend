@@ -1,23 +1,52 @@
-name: SonarCloud Analysis
+name: Test and Coverage
 
 on: [push, pull_request]
 
+env:
+  VITE_FIREBASE_ADMIN_TYPE: ${{ secrets.VITE_FIREBASE_ADMIN_TYPE }}
+  VITE_FIREBASE_ADMIN_PROJECTID: ${{ secrets.VITE_FIREBASE_ADMIN_PROJECTID }}
+  VITE_FIREBASE_ADMIN_PRIVATE_KEY: ${{ secrets.VITE_FIREBASE_ADMIN_PRIVATE_KEY }}
+  VITE_FIREBASE_ADMIN_EMAIL: ${{ secrets.VITE_FIREBASE_ADMIN_EMAIL }}
+  VITE_FIREBASE_CLIENT_APIKEY: ${{ secrets.VITE_FIREBASE_CLIENT_APIKEY }}
+  VITE_FIREBASE_CLIENT_AUTHDOMAIN: ${{ secrets.VITE_FIREBASE_CLIENT_AUTHDOMAIN }}
+  VITE_FIREBASE_CLIENT_PROJECTID: ${{ secrets.VITE_FIREBASE_CLIENT_PROJECTID }}
+  VITE_FIREBASE_CLIENT_STORAGEBUCKET: ${{ secrets.VITE_FIREBASE_CLIENT_STORAGEBUCKET }}
+  VITE_FIREBASE_CLIENT_MESSAGINGSENDERID: ${{ secrets.VITE_FIREBASE_CLIENT_MESSAGINGSENDERID }}
+  VITE_FIREBASE_CLIENT_APPID: ${{ secrets.VITE_FIREBASE_CLIENT_APPID }}
+  VITE_FIREBASE_CLIENT_MEASUREMENTID: ${{ secrets.VITE_FIREBASE_CLIENT_MEASUREMENTID }}
+
 jobs:
+  test-coverage:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+      - name: Install Dependencies
+        run: npm ci
+      - name: Run test
+        run: npm run coverage
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: coverage/lcov.info
   sonarcloud:
     name: SonarCloud
+    needs: test-coverage
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
-
-      ## Uncomment this for sonarcloud coverage
-      # - name: Download coverage report artifact
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: coverage-report
-
+      - name: Download coverage report artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: coverage-report
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
