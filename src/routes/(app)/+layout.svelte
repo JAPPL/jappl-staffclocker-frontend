@@ -43,7 +43,7 @@
 		},
 		{
 			icon: mdiAccountEdit,
-			path: '/',
+			path: '/member-management',
 			label: 'Project Member Management',
 			value: 'pmm'
 		}
