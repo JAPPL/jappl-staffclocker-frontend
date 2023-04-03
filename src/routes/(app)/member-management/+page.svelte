@@ -7,6 +7,7 @@
 	import type { Project } from '../../../lib/interface/project';
 	import type { ErrorResponse } from '../../../lib/interface/error-response';
 	import Button, { Label } from '@smui/button';
+	import Select, { Option } from '@smui/select';
 	import { onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
 	import { userStore } from '../../../lib/store/user.js';
@@ -17,6 +18,8 @@
 	let projectList: Project[] = [];
 	let projectMemberList: ProjectMember[] = [];
 	let userList: User[] = [];
+	let selectedUserFilter: string | undefined;
+	let selectedProjectFilter: string | undefined;
 
 	onMount(async () => {
 		await loadProject();
@@ -104,6 +107,32 @@
 			</Button>
 		</div>
 		<div class="divider" />
+		<div class="filter-container">
+			<Select
+				disabled={!loading}
+				variant="outlined"
+				bind:value={selectedProjectFilter}
+				label="Filter by project"
+				class="shaped-outlined"
+			>
+				<Option value={undefined} />
+				{#each projectList as project}
+					<Option value={project.projectName}>{project.projectName}</Option>
+				{/each}
+			</Select>
+			<Select
+				disabled={!loading}
+				variant="outlined"
+				bind:value={selectedUserFilter}
+				label="Filter by user"
+				class="shaped-outlined"
+			>
+				<Option value={undefined} />
+				{#each userList as userOption}
+					<Option value={userOption.firstName}>{userOption.firstName} {userOption.lastName}</Option>
+				{/each}
+			</Select>
+		</div>
 		<div class="table-container">
 			<DataTable table$aria-label="Project Member List" style="width: 100%;">
 				<Head>
@@ -150,6 +179,10 @@
 	.table-container {
 		max-height: 75vh;
 		overflow-y: auto;
+	}
+
+	.filter-container {
+		margin-bottom: 16px;
 	}
 
 	.divider {
