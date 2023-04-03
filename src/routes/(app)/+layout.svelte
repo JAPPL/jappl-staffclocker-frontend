@@ -25,13 +25,13 @@
 		},
 		{
 			icon: mdiCheckCircleOutline,
-			path: '/timelog',
+			path: '/paid-timelog',
 			label: 'Paid time log',
 			value: 'paid'
 		},
 		{
 			icon: mdiTimerSandComplete,
-			path: '/',
+			path: '/timelog-management',
 			label: 'Time Log Management',
 			value: 'tm'
 		},
