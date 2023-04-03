@@ -121,10 +121,11 @@
 		{#if loadingDialog}
 			<div class="dialog-divider" />
 		{/if}
-		<LinearProgress bind:closed={loadingDialog} indeterminate />
+		<LinearProgress data-testid="load-bar" bind:closed={loadingDialog} indeterminate />
 		<Content id="mandatory-content">
 			<Textfield
 				disabled={!loadingDialog}
+				data-testid="project-field"
 				label="Project Name"
 				variant="outlined"
 				invalid={!$projectForm.valid}
@@ -140,10 +141,16 @@
 		</Content>
 
 		<Actions>
-			<Button action="close">
+			<Button action="close" data-testid="close-button">
 				<Label>Close</Label>
 			</Button>
-			<Button color="secondary" variant="unelevated" action="submit" disabled={!$projectForm.valid}>
+			<Button
+				data-testid="confirm-button"
+				color="secondary"
+				variant="unelevated"
+				action="submit"
+				disabled={!$projectForm.valid}
+			>
 				<Label>Confirm</Label>
 			</Button>
 		</Actions>
