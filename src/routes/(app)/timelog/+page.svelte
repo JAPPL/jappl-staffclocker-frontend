@@ -3,16 +3,11 @@
 	import Select, { Option } from '@smui/select';
 	import type { ErrorResponse } from '../../../lib/interface/error-response';
 	import DataTable, { Head, Body, Row, Cell, Label, SortValue } from '@smui/data-table';
-	import IconButton from '@smui/icon-button';
 	import { onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
 	import type { TimeLog } from '../../../lib/interface/timelog';
 	import type { Project } from '../../../lib/interface/project';
 	import Icon from '@iconify/svelte';
-	import TimeLogDeleteConfirmation from '$lib/component/timelog/timelog-delete-confirmation/TimeLogDeleteConfirmation.svelte';
-	import TimeLogEditConfirmation from '$lib/component/timelog/timelog-edit-confirmation/TimeLogEditConfirmation.svelte';
-	import { field, form } from 'svelte-forms';
-	import { required } from 'svelte-forms/validators';
 
 	async function handleErrorResponse(response: Response): Promise<void> {
 		if (response.status == 500) {
@@ -79,15 +74,6 @@
 	let filteredTimeLogs: TimeLog[] = [];
 	let projectList: Project[] = [];
 	let selectedProject = '';
-	let loadingDialog = true;
-	let openDeleteDialog = false;
-	let openEditDialog = false;
-	let selectedTimeLogForDelete: TimeLog | undefined;
-	let message = field('message', '', [required()]);
-	let id = field('id', 0);
-	let hour_spent = field('hour_spent', 0, [required()]);
-	let projectId = field('projectId', 0);
-	let timeLogForm = form(message, hour_spent, id, projectId);
 
 	let sort: keyof TimeLog = 'timestamp';
 	let sortDirection: Lowercase<keyof typeof SortValue> = 'ascending';
@@ -95,19 +81,6 @@
 
 	function formatDate(date: string) {
 		return date.split('T')[0];
-	}
-
-	function toggleEditDialog(timelog: TimeLog): void {
-		$id.value = timelog.id;
-		$message.value = timelog.message;
-		$hour_spent.value = timelog.hourSpent;
-		$projectId.value = timelog.projectId.projectId;
-		openEditDialog = !openEditDialog;
-	}
-
-	function toggleDeleteDialog(timelog: TimeLog): void {
-		selectedTimeLogForDelete = timelog;
-		openDeleteDialog = true;
 	}
 
 	$: if (selectedProject) {
@@ -137,7 +110,9 @@
 		<div class="table-container">
 			<Head>
 				<div style="margin-left: 20px;">
-					<h2 class="mdc-typography--headline6" style="margin-top: 15px;">Time Logs History</h2>
+					<h2 class="mdc-typography--headline6" style="margin-top: 15px;">
+						Paid Time Logs History
+					</h2>
 				</div>
 				<div style="padding-left: 20px;">
 					<Select
@@ -168,9 +143,6 @@
 					<Cell columnId="approved">
 						<Label>Approved</Label>
 					</Cell>
-					<Cell sortable={false}>
-						<Label>Actions</Label>
-					</Cell>
 				</Row>
 			</Head>
 			<Body>
@@ -199,55 +171,11 @@
 								/>
 							{/if}
 						</Cell>
-						{#if timelog.approved}
-							<IconButton
-								class="material-icons"
-								on:click={() => {
-									toggleEditDialog(timelog);
-								}}
-								disabled>edit</IconButton
-							>
-							<IconButton
-								class="material-icons"
-								on:click={() => {
-									toggleDeleteDialog(timelog);
-								}}
-								disabled>delete</IconButton
-							>
-						{:else}
-							<IconButton
-								class="material-icons"
-								on:click={() => {
-									toggleEditDialog(timelog);
-								}}>edit</IconButton
-							>
-							<IconButton
-								class="material-icons"
-								on:click={() => {
-									toggleDeleteDialog(timelog);
-								}}>delete</IconButton
-							>
-						{/if}
 					</Row>
 				{/each}
 			</Body>
 		</div>
 	</DataTable>
-	<TimeLogEditConfirmation
-		bind:loadingDialog
-		bind:openEditDialog
-		bind:message
-		bind:timeLogForm
-		bind:id
-		bind:projectId
-		bind:hour_spent
-		on:loadTimeLog={loadTimeLog}
-	/>
-	<TimeLogDeleteConfirmation
-		bind:openDeleteDialog
-		bind:selectedTimeLogForDelete
-		on:loadTimeLog={loadTimeLog}
-	/>
 </div>
 
 <style>
@@ -261,5 +189,7 @@
 
 	.table-container {
 		min-height: 80vh;
+		background: white;
+		border: none;
 	}
 </style>
