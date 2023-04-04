@@ -7,7 +7,8 @@
 	import toast from 'svelte-french-toast';
 	import type { TimeLog } from '../../../lib/interface/timelog';
 	import type { Project } from '../../../lib/interface/project';
-	import Icon from '@iconify/svelte';
+	import Icon from 'mdi-svelte';
+	import { mdiCheckCircleOutline } from '@mdi/js';
 
 	async function handleErrorResponse(response: Response): Promise<void> {
 		if (response.status == 500) {
@@ -155,7 +156,7 @@
 						<Cell>
 							{#if timelog.approved}
 								<Icon
-									icon="material-symbols:check-circle-outline-rounded"
+									path={mdiCheckCircleOutline}
 									color="green"
 									width="25"
 									height="25"
@@ -163,7 +164,7 @@
 								/>
 							{:else}
 								<Icon
-									icon="ph:x-circle-bold"
+									path={mdiCheckCircleOutline}
 									color="red"
 									width="25"
 									height="25"

@@ -6,6 +6,11 @@ export interface TimeLog {
 		projectId: number;
 		projectName: string;
 	};
+	userId: {
+		userId: number;
+		firstName: string;
+		lastName: string;
+	};
 	hourSpent: number;
 	approved: boolean;
 	paid: boolean;
