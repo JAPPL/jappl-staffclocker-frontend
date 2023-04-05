@@ -7,11 +7,19 @@
 	import toast from 'svelte-french-toast';
 	import type { TimeLog } from '../../../lib/interface/timelog';
 	import type { Project } from '../../../lib/interface/project';
+	import type { User } from '../../../lib/interface/user';
 	import TimeLogDeleteConfirmation from '$lib/component/timelog-management/timelog-delete-confirmation/TimeLogDeleteConfirmation.svelte';
 	import TimeLogApproveConfirmation from '$lib/component/timelog-management/timelog-approve-confirmation/TimeLogApproveConfirmation.svelte';
 	import TimeLogMarkPaidConfirmation from '$lib/component/timelog-management/timelog-mark-paid-confirmation/TimeLogMarkPaidConfirmation.svelte';
 	import Icon from 'mdi-svelte';
-	import { mdiCashCheck, mdiCheckCircleOutline, mdiCheckDecagramOutline, mdiDelete } from '@mdi/js';
+	import {
+		mdiCashCheck,
+		mdiCheckCircleOutline,
+		mdiCheckDecagramOutline,
+		mdiDelete,
+		mdiAlphaXCircleOutline,
+		mdiMinusCircleOutline
+	} from '@mdi/js';
 	import Button from '@smui/button';
 
 	async function handleErrorResponse(response: Response): Promise<void> {
@@ -65,15 +73,38 @@
 			});
 	}
 
+	async function loadUsers(): Promise<void> {
+		loading = false;
+		const token: string = $userStore.token || '';
+		await fetch('api/user/list', {
+			method: 'GET',
+			headers: new Headers({ Authorization: `Bearer ${token}` })
+		})
+			.then(async (response: Response) => {
+				if (!response.ok) {
+					return Promise.reject(response);
+				} else {
+					userList = await response.json();
+					loading = true;
+				}
+			})
+			.catch((response: Response) => {
+				handleErrorResponse(response);
+			});
+	}
+
 	onMount(async () => {
 		await loadTimeLog();
 		await loadProject();
+		await loadUsers();
 	});
 
 	let timelogs: TimeLog[] = [];
 	let filteredTimeLogs: TimeLog[] = [];
 	let projectList: Project[] = [];
+	let userList: User[] = [];
 	let selectedProject = '';
+	let selectedUser = '';
 
 	let sort: keyof TimeLog = 'timestamp';
 	let sortDirection: Lowercase<keyof typeof SortValue> = 'ascending';
@@ -86,6 +117,9 @@
 	$: if (selectedProject) {
 		getTimeLogsByProject();
 	}
+	$: if (selectedUser) {
+		getTimeLogsByUser();
+	}
 
 	const getTimeLogsByProject = () => {
 		if (selectedProject === ' ') {
@@ -93,6 +127,15 @@
 		}
 		return (filteredTimeLogs = timelogs.filter(
 			(timelog) => timelog.projectId.projectName === selectedProject
+		));
+	};
+
+	const getTimeLogsByUser = () => {
+		if (selectedUser === ' ') {
+			return (filteredTimeLogs = timelogs);
+		}
+		return (filteredTimeLogs = timelogs.filter(
+			(timelog) => timelog.userId.firstName + timelog.userId.lastName === selectedUser
 		));
 	};
 
@@ -148,6 +191,19 @@
 							<Option value={project.projectName}>{project.projectName}</Option>
 						{/each}
 					</Select>
+					<Select
+						class="shaped-outlined"
+						variant="outlined"
+						label="Filter by User"
+						bind:value={selectedUser}
+					>
+						<Option value=" " />
+						{#each userList as user}
+							<Option value="{user.firstName}{user.lastName}"
+								>{user.firstName} {user.lastName}</Option
+							>
+						{/each}
+					</Select>
 				</div>
 				<Row>
 					<Cell columnId="employee">
@@ -181,7 +237,7 @@
 							{#if timelog.approved}
 								<Icon path={mdiCheckCircleOutline} color="green" style="padding-left: 15px;" />
 							{:else}
-								<Icon path={mdiCheckCircleOutline} color="red" style="padding-left: 15px;" />
+								<Icon path={mdiMinusCircleOutline} color="red" style="padding-left: 15px;" />
 							{/if}
 						</Cell>
 						<Cell>
