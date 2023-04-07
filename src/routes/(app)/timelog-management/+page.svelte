@@ -17,7 +17,6 @@
 		mdiCheckCircleOutline,
 		mdiCheckDecagramOutline,
 		mdiDelete,
-		mdiAlphaXCircleOutline,
 		mdiMinusCircleOutline
 	} from '@mdi/js';
 	import Button from '@smui/button';
@@ -103,8 +102,8 @@
 	let filteredTimeLogs: TimeLog[] = [];
 	let projectList: Project[] = [];
 	let userList: User[] = [];
-	let selectedProject = '';
-	let selectedUser = '';
+	let selectedProject = ' ';
+	let selectedUser = ' ';
 
 	let sort: keyof TimeLog = 'timestamp';
 	let sortDirection: Lowercase<keyof typeof SortValue> = 'ascending';
@@ -114,28 +113,26 @@
 		return date.split('T')[0];
 	}
 
-	$: if (selectedProject) {
-		getTimeLogsByProject();
-	}
-	$: if (selectedUser) {
-		getTimeLogsByUser();
+	$: if (selectedUser || selectedProject) {
+		getTimeLogsByUserAndProject();
 	}
 
-	const getTimeLogsByProject = () => {
-		if (selectedProject === ' ') {
+	const getTimeLogsByUserAndProject = () => {
+		if (selectedUser === ' ' && selectedProject === ' ') {
 			return (filteredTimeLogs = timelogs);
+		} else if (selectedProject === ' ' && selectedUser !== ' ') {
+			return (filteredTimeLogs = timelogs.filter(
+				(timelog) => timelog.userId.firstName + timelog.userId.lastName === selectedUser
+			));
+		} else if (selectedUser === ' ' && selectedProject !== ' ') {
+			return (filteredTimeLogs = timelogs.filter(
+				(timelog) => timelog.projectId.projectName === selectedProject
+			));
 		}
 		return (filteredTimeLogs = timelogs.filter(
-			(timelog) => timelog.projectId.projectName === selectedProject
-		));
-	};
-
-	const getTimeLogsByUser = () => {
-		if (selectedUser === ' ') {
-			return (filteredTimeLogs = timelogs);
-		}
-		return (filteredTimeLogs = timelogs.filter(
-			(timelog) => timelog.userId.firstName + timelog.userId.lastName === selectedUser
+			(timelog) =>
+				timelog.userId.firstName + timelog.userId.lastName === selectedUser &&
+				timelog.projectId.projectName === selectedProject
 		));
 	};
 
