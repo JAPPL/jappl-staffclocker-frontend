@@ -53,15 +53,20 @@
 		aria-labelledby="mandatory-title"
 		aria-describedby="mandatory-content"
 	>
-		<Title id="mandatory-title">TimeLog Delete Confirmation</Title>
-		<Content id="mandatory-content">Are you sure to delete this timelog?</Content>
+		<Title id="mandatory-title" data-testid="mandatory-title-delete"
+			>TimeLog Delete Confirmation</Title
+		>
+		<Content id="mandatory-content" data-testid="mandatory-content-delete"
+			>Are you sure to delete this timelog?</Content
+		>
 		<Actions>
-			<Button action="close">
+			<Button action="close" data-testid="delete-close-button">
 				<Label>Close</Label>
 			</Button>
 			<Button
 				color="secondary"
 				variant="unelevated"
+				data-testid="delete-confirm-button"
 				on:click={deleteTimeLog(selectedTimeLogForDelete)}
 			>
 				<Label>Confirm</Label>

@@ -53,15 +53,20 @@
 		aria-labelledby="mandatory-title"
 		aria-describedby="mandatory-content"
 	>
-		<Title id="mandatory-title">TimeLog Mark as Paid Confirmation</Title>
-		<Content id="mandatory-content">Are you sure to mark this timelog as paid?</Content>
+		<Title id="mandatory-title" data-testid="mandatory-title-mark-paid"
+			>TimeLog Mark as Paid Confirmation</Title
+		>
+		<Content id="mandatory-content" data-testid="mandatory-content-mark-paid"
+			>Are you sure to mark this timelog as paid?</Content
+		>
 		<Actions>
-			<Button action="close">
+			<Button action="close" data-testid="mark-paid-close-button">
 				<Label>Close</Label>
 			</Button>
 			<Button
 				color="secondary"
 				variant="unelevated"
+				data-testid="mark-paid-confirm-button"
 				on:click={markTimeLogPaid(selectedTimeLogForMarkPaid)}
 			>
 				<Label>Confirm</Label>

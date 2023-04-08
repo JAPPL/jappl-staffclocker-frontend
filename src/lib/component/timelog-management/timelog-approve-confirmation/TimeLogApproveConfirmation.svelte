@@ -53,15 +53,20 @@
 		aria-labelledby="mandatory-title"
 		aria-describedby="mandatory-content"
 	>
-		<Title id="mandatory-title">TimeLog Approve Confirmation</Title>
-		<Content id="mandatory-content">Are you sure to approve this timelog?</Content>
+		<Title id="mandatory-title" data-testid="mandatory-title-approve"
+			>TimeLog Approve Confirmation</Title
+		>
+		<Content id="mandatory-content" data-testid="mandatory-content-approve"
+			>Are you sure to approve this timelog?</Content
+		>
 		<Actions>
-			<Button action="close">
+			<Button action="close" data-testid="approve-close-button">
 				<Label>Close</Label>
 			</Button>
 			<Button
 				color="secondary"
 				variant="unelevated"
+				data-testid="approve-confirm-button"
 				on:click={approveTimeLog(selectedTimeLogForApprove)}
 			>
 				<Label>Confirm</Label>
