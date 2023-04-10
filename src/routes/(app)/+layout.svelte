@@ -16,6 +16,8 @@
 
 	let active = '';
 
+	let selectionIndex = 1;
+
 	let menus: LayoutMenu[] = [
 		{
 			icon: mdiHome,
@@ -61,10 +63,10 @@
 <div class="container">
 	<Drawer variant="dismissible" bind:open>
 		<div class="center">
-			<img src="src/lib/images/logo-without-text.png" class="logo-size" alt="logo" />
+			<img src="logo-without-text.png" class="logo-size" alt="logo" />
 		</div>
 		<Content class="test">
-			<List>
+			<List selectedIndex={selectionIndex}>
 				{#each menus as { path, icon, value, label }, index}
 					<Wrapper>
 						<Item
@@ -72,6 +74,7 @@
 								active === value ? 'background-color: #51b198;' : ''
 							}`}
 							activated={active === value}
+							selected={selectionIndex === index}
 							on:click={() => redirect(path, value)}
 						>
 							<Icon path={icon} color="white" />

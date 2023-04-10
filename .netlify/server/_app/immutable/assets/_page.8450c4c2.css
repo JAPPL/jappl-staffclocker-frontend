@@ -1,0 +1,26 @@
+#rcorners1.svelte-dieu2w.svelte-dieu2w {
+	border-radius: 20px;
+	background: white;
+	padding: 20px;
+	height: 50vh;
+}
+.grid-container.svelte-dieu2w.svelte-dieu2w {
+	display: grid;
+	grid-template-columns: auto auto auto;
+	height: 100%;
+}
+.grid-container.svelte-dieu2w > div.svelte-dieu2w {
+	text-align: center;
+}
+.item1.svelte-dieu2w.svelte-dieu2w {
+	grid-row-start: 1;
+	grid-row-end: 4;
+	grid-column-start: 1;
+	grid-column-end: 3;
+}
+.item2.svelte-dieu2w.svelte-dieu2w {
+	grid-row-start: 1;
+	grid-row-end: 4;
+	grid-column-start: 3;
+	grid-column-end: 4;
+}

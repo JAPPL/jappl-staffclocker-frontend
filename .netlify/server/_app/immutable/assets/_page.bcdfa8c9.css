@@ -1,0 +1,22 @@
+.invalid-field.svelte-1oipm1e {
+	margin: 10px;
+	color: #b71c1cff;
+}
+.dialog-divider.svelte-1oipm1e {
+	margin: 2px 0;
+	border-bottom: 1px solid #bfbfbf;
+}
+.container.svelte-bdbl5f.mdc-card {
+	padding: 20px;
+}
+.table-container.svelte-bdbl5f {
+	max-height: 75vh;
+	overflow-y: auto;
+}
+.filter-container.svelte-bdbl5f {
+	margin-bottom: 16px;
+}
+.divider.svelte-bdbl5f {
+	margin: 16px 0;
+	border-bottom: 1px solid #bfbfbf;
+}
