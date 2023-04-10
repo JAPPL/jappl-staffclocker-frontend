@@ -1,5 +1,5 @@
 import type { Project } from './project';
-import type {User} from './user';
+import type { User } from './user';
 
 export interface TimeLog {
 	id: number;
