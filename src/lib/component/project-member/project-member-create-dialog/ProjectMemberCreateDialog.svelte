@@ -43,6 +43,7 @@
 		} else {
 			loadUser = true;
 		}
+		$userId.value = null;
 	}
 
 	async function closeHandler(e: CustomEvent<{ action: string }>): Promise<void> {
@@ -111,22 +112,25 @@
 <div>
 	<Dialog
 		bind:open={openCreateDialog}
-		aria-labelledby="mandatory-title"
+		aria-labelledby="mandatory-create-title"
 		aria-describedby="mandatory-content"
 		scrimClickAction=""
 		escapeKeyAction=""
 		on:SMUIDialog:closed={closeHandler}
 		surface$style="min-width: calc(100vw - 60vw); max-width: calc(100vw - 100px); min-height: calc(50vh) "
 	>
-		<Title id="mandatory-title" data-testid="mandatory-title">Add project member</Title>
+		<Title id="mandatory-create-title" data-testid="mandatory-create-title"
+			>Add project member</Title
+		>
 		{#if loadingDialog}
 			<div class="dialog-divider" />
 		{/if}
 		<LinearProgress data-testid="load-bar" bind:closed={loadingDialog} indeterminate />
-		<Content id="mandatory-content">
+		<Content id="mandatory-content" data-testid="mandatory-content">
 			<Select
 				disabled={!loadingDialog}
 				variant="outlined"
+				data-testid="project-selector"
 				key={(project) => `${project ? project.projectId : ''}`}
 				on:SMUIMenu:selected={filterUser}
 				bind:value={$projectId.value}
@@ -136,12 +140,15 @@
 			>
 				<Option value={undefined} />
 				{#each allProjects as project (project.projectName)}
-					<Option value={project.projectId}>{project.projectName}</Option>
+					<Option data-testid={project.projectName} value={project.projectId}
+						>{project.projectName}</Option
+					>
 				{/each}
 			</Select>
 			<Select
 				disabled={!loadingDialog || loadUser}
 				variant="outlined"
+				data-testid="user-selector"
 				key={(user) => `${user ? user.userId : ''}`}
 				bind:value={$userId.value}
 				invalid={$projectForm.hasError('user.required')}
@@ -154,7 +161,7 @@
 				{/each}
 			</Select>
 			{#if $projectForm.hasError('project.required') || $projectForm.hasError('user.required')}
-				<p class="invalid-field">Please select both fields</p>
+				<p data-testid="error-message" class="invalid-field">Please select both fields</p>
 			{/if}
 		</Content>
 

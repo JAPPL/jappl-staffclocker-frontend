@@ -139,7 +139,7 @@
 				label="Filter by project"
 				class="shaped-outlined"
 			>
-				<Option value={null} />
+				<Option value={null}>Not selected</Option>
 				{#each projectList as project (project.projectName)}
 					<Option value={project}>{project.projectName}</Option>
 				{/each}
@@ -153,7 +153,7 @@
 				label="Filter by user"
 				class="shaped-outlined"
 			>
-				<Option value={null} />
+				<Option value={null}>Not selected</Option>
 				{#each userList as userOption (userOption.firstName)}
 					<Option value={userOption}>{userOption.firstName} {userOption.lastName}</Option>
 				{/each}

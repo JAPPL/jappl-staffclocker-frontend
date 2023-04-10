@@ -30,7 +30,8 @@ const userStore: UserStore = {
 const projectMember: ProjectMember = {
 	projectMemberId: 1,
 	project: project,
-	user: user
+	user: user,
+	isPm: false
 };
 
 describe('ProjectDeleteConfirmation', async () => {
