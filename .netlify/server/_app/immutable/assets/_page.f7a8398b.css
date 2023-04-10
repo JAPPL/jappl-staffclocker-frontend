@@ -1,0 +1,7 @@
+.container.svelte-1b1rlws.mdc-card {
+	padding: 20px;
+}
+.table-container.svelte-1b1rlws {
+	max-height: 75vh;
+	overflow-y: auto;
+}

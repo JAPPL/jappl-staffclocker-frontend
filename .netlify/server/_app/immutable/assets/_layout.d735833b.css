@@ -1,0 +1,23 @@
+.container.svelte-1hdg89 .mdc-drawer {
+	top: 0;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	background: #130f42;
+	width: 70px;
+}
+.container.svelte-1hdg89 .mdc-drawer-app-content {
+	margin-left: 90px !important;
+}
+.logo-size.svelte-1hdg89 {
+	width: 40px;
+}
+.center.svelte-1hdg89 {
+	display: flex;
+	justify-content: center;
+}
+.main-content.svelte-1hdg89 {
+	overflow: auto;
+	height: 100vh;
+	padding: 30px 30px 30px 0;
+	box-sizing: border-box;
+}
