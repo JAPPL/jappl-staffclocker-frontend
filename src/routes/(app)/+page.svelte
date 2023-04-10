@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ClockYourTime from './ClockYourTime.svelte';
+	import Profile from './Profile.svelte';
 </script>
 
 <div class="grid-container">
@@ -7,7 +8,7 @@
 		<ClockYourTime />
 	</div>
 	<div class="item2 rcorners1" style="margin: 30px 30px 0px 0px">
-		<h>This will display profile</h>
+		<Profile />
 	</div>
 	<div class="item3" id="rcorners1" style="margin-left: 30px; margin-right: 30px;">
 		<h>This will display profile</h>
@@ -29,7 +30,7 @@
 	}
 	.grid-container {
 		display: grid;
-		grid-template-columns: auto auto auto;
+		grid-template-columns: repeat(15, minmax(0, 1fr));
 		height: 100%;
 	}
 
@@ -40,17 +41,17 @@
 		grid-row-start: 1;
 		grid-row-end: 4;
 		grid-column-start: 1;
-		grid-column-end: 5;
+		grid-column-end: 12;
 	}
 	.item2 {
 		grid-row-start: 1;
 		grid-row-end: 4;
-		grid-column-start: 5;
-		grid-column-end: 6;
+		grid-column-start: 12;
+		grid-column-end: 16;
 	}
 	.item3 {
 		grid-column-start: 1;
-		grid-column-end: 6;
+		grid-column-end: 16;
 	}
 	div {
 		/* border: 3px solid black; */
