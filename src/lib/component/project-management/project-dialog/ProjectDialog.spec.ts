@@ -1,8 +1,6 @@
 import { render, screen } from '@testing-library/svelte';
 import ProjectDialog from './ProjectDialog.svelte';
 import { beforeEach, describe } from 'vitest';
-import type { Project } from '../../../interface/project';
-import type { ErrorResponse } from '../../../interface/error-response';
 
 global.fetch = vi.fn();
 
