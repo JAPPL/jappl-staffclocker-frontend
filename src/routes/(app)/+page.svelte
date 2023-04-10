@@ -1,6 +1,7 @@
 <script lang="ts">
 	import ClockYourTime from './ClockYourTime.svelte';
 	import Profile from './Profile.svelte';
+	import TimeLogList from './TimeLogList.svelte';
 </script>
 
 <div class="grid-container">
@@ -11,7 +12,7 @@
 		<Profile />
 	</div>
 	<div class="item3" id="rcorners1" style="margin-left: 30px; margin-right: 30px;">
-		<h>This will display profile</h>
+		<TimeLogList />
 	</div>
 </div>
 

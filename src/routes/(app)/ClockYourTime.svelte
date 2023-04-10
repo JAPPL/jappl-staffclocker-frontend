@@ -3,15 +3,102 @@
 	import Textfield from '@smui/textfield';
 	import Select, { Option } from '@smui/select';
 	import { DateInput } from 'date-picker-svelte';
+	import type { Project } from '$lib/interface/project';
+	import type { ErrorResponse } from '$lib/interface/error-response';
+	import { userStore } from '$lib/store/user';
+	import { onMount } from 'svelte';
+	import toast from 'svelte-french-toast';
 
-	let date = new Date();
-	let value = '';
-	let valueA: number | null = 1;
-	let projectList: string[] | null[] = ['proj1', 'proj2', 'proj3'];
+	import Flatpickr from 'svelte-flatpickr';
+
+	import 'flatpickr/dist/flatpickr.css';
+	import 'flatpickr/dist/themes/light.css';
+	import Body from '@smui/data-table/src/Body.svelte';
+
+	let date: Date | null = null;
+	const flatpickrOptions = {
+		wrap: true,
+		element: '#my-picker',
+		disable: [
+			function (date: Date) {
+				// return true to disable
+				let dateNow = new Date();
+				return date < new Date(new Date().setDate(dateNow.getDate() - 7));
+			}
+		]
+	};
+
+	let describeWork = '';
+	let project: Project | null = null;
+	let hourSpent: number | null = 1;
 	let valueC: number | null = 1;
+	let loading = false;
+	let projectList: Project[] = [];
 
-	function handleClick() {
-		alert('clicked');
+	onMount(async () => {
+		await loadProject();
+	});
+
+	async function handleErrorResponse(response: Response): Promise<void> {
+		if (response.status == 500) {
+			toast.error('Internal server error.');
+		} else {
+			let err: ErrorResponse = await response.json();
+			toast.error(err.detail);
+		}
+	}
+
+	async function loadProject(): Promise<void> {
+		loading = false;
+		const token: string = $userStore.token || '';
+		await fetch('api/project/', {
+			method: 'GET',
+			headers: new Headers({ Authorization: `Bearer ${token}` })
+		})
+			.then(async (response: Response) => {
+				if (!response.ok) {
+					return Promise.reject(response);
+				} else {
+					projectList = await response.json();
+					loading = true;
+				}
+			})
+			.catch((response: Response) => {
+				handleErrorResponse(response);
+			});
+	}
+
+	async function saveTimeLog(): Promise<void> {
+		loading = false;
+		const token: string = $userStore.token || '';
+		console.log(
+			JSON.stringify({
+				hour_spent: hourSpent,
+				message: describeWork,
+				project_id: project?.projectId,
+				timestamp: new Date(new Date().setDate(date!.getDate()))
+			})
+		);
+		await fetch('api/timelog/create', {
+			method: 'POST',
+			body: JSON.stringify({
+				hour_spent: hourSpent,
+				message: describeWork,
+				project_id: project?.projectId,
+				timestamp: new Date(new Date().setDate(date!.getDate()))
+			}),
+			headers: new Headers({ Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' })
+		})
+			.then(async (response: Response) => {
+				if (!response.ok) {
+					return Promise.reject(response);
+				} else {
+					console.log('cowabunga');
+				}
+			})
+			.catch((response: Response) => {
+				handleErrorResponse(response);
+			});
 	}
 </script>
 
@@ -30,7 +117,7 @@
 					helperLine$style="width: 100%;"
 					input$placeholder="Describe your work"
 					textarea
-					bind:value
+					bind:value={describeWork}
 				/>
 			</div>
 		</div>
@@ -45,9 +132,9 @@
 						</div>
 						<div class="rcorners2">
 							<Select
-								style="width: 90%;"
+								style="width: 95%;"
 								key={(value) => `${value == null ? '' : value}`}
-								bind:value={valueA}
+								bind:value={hourSpent}
 								placeholder="Hours Spent"
 							>
 								{#each [1, 2, 3, 4, 5, 6, 7, 8] as value}
@@ -64,14 +151,13 @@
 						</div>
 						<div class="rcorners2">
 							<Select
-								style="width: 90%;"
-								key={(value) => `${value == null ? '' : value}`}
-								bind:value
-								label="Which Project"
+								style="width: 95%;"
+								key={(value) => `${value == '' ? 'Select' : value}`}
+								bind:value={project}
 							>
 								<Option />
 								{#each projectList as value}
-									<Option {value}>{value}</Option>
+									<Option {value}>{value.projectName}</Option>
 								{/each}
 							</Select>
 						</div>
@@ -88,9 +174,11 @@
 						<div>
 							<h1>Date</h1>
 						</div>
-						<div class="rcorners3" style="position:relative;">
-							<DateInput bind:value={date} />
-						</div>
+						<Flatpickr options={flatpickrOptions} bind:value={date} element="#my-picker">
+							<div class="rcorners3" id="my-picker" style="position:relative;">
+								<input type="text" placeholder="Select Date.." data-input />
+							</div>
+						</Flatpickr>
 					</div>
 				</Cell>
 				<Cell span={6} style="height: 100%;">
@@ -98,7 +186,7 @@
 						<div>
 							<h1><br /></h1>
 						</div>
-						<button on:click={handleClick} class="button">
+						<button on:click={saveTimeLog} class="button">
 							<h1>Save</h1>
 						</button>
 					</div>

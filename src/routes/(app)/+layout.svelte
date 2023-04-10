@@ -114,7 +114,7 @@
 	.main-content {
 		overflow: auto;
 		height: 100vh;
-		padding: 30px 30px 30px 0;
+		/* padding: 30px 30px 30px 0; */
 		margin: 0%;
 		box-sizing: border-box;
 	}

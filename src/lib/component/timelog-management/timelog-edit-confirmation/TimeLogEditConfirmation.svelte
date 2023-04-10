@@ -9,6 +9,7 @@
 	import type { ErrorResponse } from '../../../interface/error-response';
 	import toast from 'svelte-french-toast';
 	import { createEventDispatcher } from 'svelte';
+	import type { TimeLog } from '$lib/interface/timelog';
 
 	const dispatch = createEventDispatcher();
 
@@ -19,6 +20,7 @@
 	export let projectId = field('projectId', 0);
 	export let timeLogForm = form(message, hour_spent, id, projectId);
 	export let openEditDialog = false;
+	export let selectedTimeLogForEdit: TimeLog | undefined;
 
 	async function closeHandler(e: CustomEvent<{ action: string }>): Promise<void> {
 		switch (e.detail.action) {
@@ -52,10 +54,10 @@
 		const token: string = $userStore.token || '';
 		let formData: FormData = new FormData();
 		formData.append('message', $message.value);
-		formData.append('hour_spent', $hour_spent.value);
-		formData.append('projectId', $projectId.value);
+		formData.append('hour_spent', $hour_spent.value.toString());
+		formData.append('projectId', $projectId.value.toString());
 		console.log(formData);
-		await fetch(`api/timelog/update/${$id.value}`, {
+		await fetch(`api/timelog/update/${(selectedTimeLogForEdit as TimeLog).projectId}`, {
 			method: 'PUT',
 			headers: new Headers({ Authorization: `Bearer ${token}` }),
 			body: formData
