@@ -232,11 +232,13 @@
 							<Cell>{formatDate(timelog.timestamp)}</Cell>
 							<Cell style="padding-left: 28px;">{timelog.hourSpent}</Cell>
 							<Cell>
-								{#if timelog.approved}
-									<Icon path={mdiCheckCircleOutline} color="green" style="padding-left: 15px;" />
-								{:else}
-									<Icon path={mdiMinusCircleOutline} color="red" style="padding-left: 15px;" />
-								{/if}
+								<div style="display: flex; justify-content: center">
+									{#if timelog.approved}
+										<Icon path={mdiCheckCircleOutline} color="green" />
+									{:else}
+										<Icon path={mdiMinusCircleOutline} color="red" />
+									{/if}
+								</div>
 							</Cell>
 							<Cell>
 								{#if timelog.approved}
@@ -249,7 +251,7 @@
 											disabled
 											variant="raised"
 										>
-											<Icon path={mdiCashCheck} style="padding-right: 3px;" />
+											<Icon path={mdiCashCheck} />
 											<Label style="padding-left: 3px;">Mark as Paid</Label>
 										</Button>
 									{:else}
@@ -260,7 +262,7 @@
 											}}
 											variant="raised"
 										>
-											<Icon path={mdiCashCheck} style="padding-right: 3px;" />
+											<Icon path={mdiCashCheck} />
 											<Label style="padding-left: 3px;">Mark as Paid</Label>
 										</Button>
 									{/if}
@@ -272,7 +274,7 @@
 										disabled
 										variant="raised"
 									>
-										<Icon path={mdiCheckDecagramOutline} style="padding-right: 3px;" />
+										<Icon path={mdiCheckDecagramOutline} />
 										<Label style="padding-left: 3px;">Approve</Label>
 									</Button>
 									<Button
@@ -282,7 +284,7 @@
 										disabled
 										variant="raised"
 									>
-										<Icon path={mdiDelete} style="padding-right: 3px;" />
+										<Icon path={mdiDelete} />
 										<Label style="padding-left: 3px;">Delete</Label>
 									</Button>
 								{:else}
@@ -294,7 +296,7 @@
 										disabled
 										variant="raised"
 									>
-										<Icon path={mdiCashCheck} style="padding-right: 3px;" />
+										<Icon path={mdiCashCheck} />
 										<Label style="padding-left: 3px;">Mark as Paid</Label>
 									</Button>
 									<Button
@@ -304,7 +306,7 @@
 										}}
 										variant="raised"
 									>
-										<Icon path={mdiCheckDecagramOutline} style="padding-right: 3px;" />
+										<Icon path={mdiCheckDecagramOutline} />
 										<Label style="padding-left: 3px;">Approve</Label>
 									</Button>
 									<Button
@@ -313,7 +315,7 @@
 										}}
 										variant="raised"
 									>
-										<Icon path={mdiDelete} style="padding-right: 3px;" />
+										<Icon path={mdiDelete} />
 										<Label style="padding-left: 3px;">Delete</Label>
 									</Button>
 								{/if}
