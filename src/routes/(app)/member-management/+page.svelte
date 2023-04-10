@@ -10,13 +10,16 @@
 	import Select, { Option } from '@smui/select';
 	import { onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
-	import { userStore } from '../../../lib/store/user.js';
-	import type { ProjectMember } from '../../../lib/interface/project-member';
-	import type { User } from '../../../lib/interface/user';
-	import type { MemberFilter } from '../../../lib/interface/member-filter';
-	import { loadProjectMember } from '../../../lib/service/project-member-service';
+	import { userStore } from '$lib/store/user.js';
+	import type { ProjectMember } from '$lib/interface/project-member';
+	import type { User } from '$lib/interface/user';
+	import type { MemberFilter } from '$lib/interface/member-filter';
+	import { loadProjectMember } from '$lib/service/project-member-service';
+	import ProjectMemberDeleteConfirmation from '$lib/component/project-member/project-member-delete-confirmation/ProjectMemberDeleteConfirmation.svelte';
 
 	let loading = false;
+	let openDeleteDialog = false;
+	let selectedProjectMemberForDelete: ProjectMember | undefined;
 	let projectList: Project[] = [];
 	let projectMemberList: ProjectMember[] = [];
 	let userList: User[] = [];
@@ -26,10 +29,14 @@
 	};
 
 	onMount(async () => {
+		await loadAll();
+	});
+
+	async function loadAll(): Promise<void> {
 		await loadProject();
 		await loadProjectMemberWithFilter();
 		await loadUser();
-	});
+	}
 
 	async function handleErrorResponse(response: Response): Promise<void> {
 		if (response.status == 500) {
@@ -96,6 +103,11 @@
 				handleErrorResponse(response);
 			});
 	}
+
+	function toggleDeleteDialog(projectMember: ProjectMember): void {
+		selectedProjectMemberForDelete = projectMember;
+		openDeleteDialog = true;
+	}
 </script>
 
 <div class="container">
@@ -156,7 +168,12 @@
 							<Cell>{projectMember.user.firstName} {projectMember.user.lastName}</Cell>
 							<Cell>{projectMember.project.projectName}</Cell>
 							<Cell>
-								<Button disabled={!loading}>
+								<Button
+									disabled={!loading}
+									on:click={() => {
+										toggleDeleteDialog(projectMember);
+									}}
+								>
 									<Icon path={mdiDeleteEmpty} />
 									<Label style="margin-left: 5px">Delete</Label>
 								</Button>
@@ -174,6 +191,12 @@
 			</DataTable>
 		</div>
 	</Card>
+
+	<ProjectMemberDeleteConfirmation
+		bind:openDeleteDialog
+		bind:selectedProjectMemberForDelete
+		on:loadMember={loadAll}
+	/>
 </div>
 
 <style lang="css">

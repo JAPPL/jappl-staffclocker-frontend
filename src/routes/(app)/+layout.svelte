@@ -100,7 +100,7 @@
 	}
 
 	.container :global(.mdc-drawer-app-content) {
-		margin-left: 7% !important;
+		margin-left: 90px !important;
 	}
 
 	.logo-size {
