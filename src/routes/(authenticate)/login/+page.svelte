@@ -31,7 +31,7 @@
 						picture: user?.picture || '',
 						token: token
 					});
-					await goto('/timelog');
+					await goto('/');
 				} else if (response.status == 500) {
 					toast.error('Internal server error');
 				} else {

@@ -16,9 +16,11 @@
 	import type { MemberFilter } from '$lib/interface/member-filter';
 	import { loadProjectMember } from '$lib/service/project-member-service';
 	import ProjectMemberDeleteConfirmation from '$lib/component/project-member/project-member-delete-confirmation/ProjectMemberDeleteConfirmation.svelte';
+	import ProjectMemberCreateDialog from '$lib/component/project-member/project-member-create-dialog/ProjectMemberCreateDialog.svelte';
 
 	let loading = false;
 	let openDeleteDialog = false;
+	let openCreateDialog = false;
 	let selectedProjectMemberForDelete: ProjectMember | undefined;
 	let projectList: Project[] = [];
 	let projectMemberList: ProjectMember[] = [];
@@ -114,7 +116,14 @@
 	<Card style="padding: 20px;">
 		<div style="display: flex; justify-content: space-between">
 			<h2 class="mdc-typography--headline6" style="margin: 0;">Project Member Management</h2>
-			<Button disabled={!loading} color="secondary" variant="unelevated">
+			<Button
+				disabled={!loading}
+				color="secondary"
+				variant="unelevated"
+				on:click={() => {
+					openCreateDialog = true;
+				}}
+			>
 				<Icon path={mdiAccountPlus} />
 				<Label style="margin-left: 5px">Add project member</Label>
 			</Button>
@@ -124,27 +133,27 @@
 			<Select
 				disabled={!loading}
 				variant="outlined"
-				key={(project) => `${project ? project.projectId : ''}`}
+				key={(project) => `${project ? project.projectId : null}`}
 				bind:value={filter.project}
 				on:SMUIMenu:selected={loadProjectMemberWithFilter}
 				label="Filter by project"
 				class="shaped-outlined"
 			>
-				<Option value={undefined} />
+				<Option value={null} />
 				{#each projectList as project (project.projectName)}
 					<Option value={project}>{project.projectName}</Option>
 				{/each}
 			</Select>
 			<Select
 				disabled={!loading}
-				key={(user) => `${user ? user.userId : ''}`}
+				key={(user) => `${user ? user.userId : null}`}
 				variant="outlined"
 				bind:value={filter.user}
 				on:SMUIMenu:selected={loadProjectMemberWithFilter}
 				label="Filter by user"
 				class="shaped-outlined"
 			>
-				<Option value={undefined} />
+				<Option value={null} />
 				{#each userList as userOption (userOption.firstName)}
 					<Option value={userOption}>{userOption.firstName} {userOption.lastName}</Option>
 				{/each}
@@ -195,6 +204,15 @@
 	<ProjectMemberDeleteConfirmation
 		bind:openDeleteDialog
 		bind:selectedProjectMemberForDelete
+		on:loadMember={loadAll}
+	/>
+
+	<ProjectMemberCreateDialog
+		bind:openCreateDialog
+		bind:loadingDialog={loading}
+		bind:allProjects={projectList}
+		bind:allProjectMembers={projectMemberList}
+		bind:allUsers={userList}
 		on:loadMember={loadAll}
 	/>
 </div>
