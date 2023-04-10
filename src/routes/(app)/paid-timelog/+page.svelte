@@ -126,6 +126,7 @@
 				bind:sortDirection
 			>
 				<Head>
+					<title>Time Log list</title>
 					<Row>
 						<Cell columnId="date">
 							<Label>Date</Label>

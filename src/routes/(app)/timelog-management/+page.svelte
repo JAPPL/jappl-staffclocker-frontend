@@ -195,6 +195,7 @@
 				bind:sortDirection
 			>
 				<Head>
+					<title>Time Log list</title>
 					<Row>
 						<Cell columnId="employee">
 							<Label>Employee Name</Label>
