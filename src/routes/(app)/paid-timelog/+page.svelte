@@ -4,6 +4,7 @@
 	import type { ErrorResponse } from '../../../lib/interface/error-response';
 	import DataTable, { Head, Body, Row, Cell, Label, SortValue } from '@smui/data-table';
 	import { onMount } from 'svelte';
+	import Card from '@smui/card';
 	import toast from 'svelte-french-toast';
 	import type { TimeLog } from '../../../lib/interface/timelog';
 	import type { Project } from '../../../lib/interface/project';
@@ -98,99 +99,96 @@
 	};
 </script>
 
-<div id="rcorners1">
-	<DataTable
-		style="margin: 25px; 
-				width: 95%;
-				min-height: 80%;"
-		table$aria-label="Time Log List"
-		sortable
-		bind:sort
-		bind:sortDirection
-	>
+<div class="container">
+	<Card style="padding: 20px">
+		<div>
+			<h2 class="mdc-typography--headline6" style="margin-top: 0;">Paid Time Logs History</h2>
+		</div>
+		<div style="margin-bottom: 16px">
+			<Select
+				class="shaped-outlined"
+				variant="outlined"
+				label="Filter by Project"
+				bind:value={selectedProject}
+			>
+				<Option value=" " />
+				{#each projectList as project}
+					<Option value={project.projectName}>{project.projectName}</Option>
+				{/each}
+			</Select>
+		</div>
 		<div class="table-container">
-			<Head>
-				<div style="margin-left: 20px;">
-					<h2 class="mdc-typography--headline6" style="margin-top: 15px;">
-						Paid Time Logs History
-					</h2>
-				</div>
-				<div style="padding-left: 20px;">
-					<Select
-						class="shaped-outlined"
-						variant="outlined"
-						label="Filter by Project"
-						bind:value={selectedProject}
-					>
-						<Option value=" " />
-						{#each projectList as project}
-							<Option value={project.projectName}>{project.projectName}</Option>
-						{/each}
-					</Select>
-				</div>
-				<Row>
-					<Cell columnId="date">
-						<Label>Date</Label>
-					</Cell>
-					<Cell sortable={false} columnId="description">
-						<Label>Description</Label>
-					</Cell>
-					<Cell columnId="project" style="width: 100%;">
-						<Label>Project</Label>
-					</Cell>
-					<Cell columnId="hours" style="width: 100%;">
-						<Label>Hours</Label>
-					</Cell>
-					<Cell columnId="approved">
-						<Label>Approved</Label>
-					</Cell>
-				</Row>
-			</Head>
-			<Body>
-				{#each filteredTimeLogs as timelog}
+			<DataTable
+				style="width: 100%"
+				table$aria-label="Time Log List"
+				sortable
+				bind:sort
+				bind:sortDirection
+			>
+				<Head>
 					<Row>
-						<Cell>{formatDate(timelog.timestamp)}</Cell>
-						<Cell>{timelog.message}</Cell>
-						<Cell>{timelog.projectId.projectName}</Cell>
-						<Cell style="padding-left: 28px;">{timelog.hourSpent}</Cell>
-						<Cell>
-							{#if timelog.approved}
-								<Icon
-									path={mdiCheckCircleOutline}
-									color="green"
-									width="25"
-									height="25"
-									style="padding-left: 15px;"
-								/>
-							{:else}
-								<Icon
-									path={mdiCheckCircleOutline}
-									color="red"
-									width="25"
-									height="25"
-									style="padding-left: 15px;"
-								/>
-							{/if}
+						<Cell columnId="date">
+							<Label>Date</Label>
+						</Cell>
+						<Cell sortable={false} columnId="description">
+							<Label>Employee Name</Label>
+						</Cell>
+						<Cell sortable={false} columnId="description" style="width: 70%;">
+							<Label>Description</Label>
+						</Cell>
+						<Cell columnId="project" style="width: 20%;">
+							<Label>Project</Label>
+						</Cell>
+						<Cell columnId="hours" style="width: 10%;">
+							<Label>Hours</Label>
+						</Cell>
+						<Cell columnId="approved">
+							<Label>Approved</Label>
 						</Cell>
 					</Row>
-				{/each}
-			</Body>
+				</Head>
+				<Body>
+					{#each filteredTimeLogs as timelog}
+						<Row>
+							<Cell>{formatDate(timelog.timestamp)}</Cell>
+							<Cell>{timelog.userId.firstName} {timelog.userId.lastName}</Cell>
+							<Cell>{timelog.message}</Cell>
+							<Cell>{timelog.projectId.projectName}</Cell>
+							<Cell style="padding-left: 28px;">{timelog.hourSpent}</Cell>
+							<Cell>
+								{#if timelog.approved}
+									<Icon
+										path={mdiCheckCircleOutline}
+										color="green"
+										width="25"
+										height="25"
+										style="padding-left: 15px;"
+									/>
+								{:else}
+									<Icon
+										path={mdiCheckCircleOutline}
+										color="red"
+										width="25"
+										height="25"
+										style="padding-left: 15px;"
+									/>
+								{/if}
+							</Cell>
+						</Row>
+					{/each}
+				</Body>
+			</DataTable>
 		</div>
-	</DataTable>
+	</Card>
 </div>
 
 <style>
-	#rcorners1 {
-		border-radius: 20px;
-		background: white;
-		margin: 25px;
-		width: auto;
-		height: 100%;
+	.container:global(.mdc-card) {
+		padding: 20px;
 	}
 
 	.table-container {
-		min-height: 80vh;
-		background: white;
-		border: none;
+		max-height: 75vh;
+		overflow-y: auto;
 	}
 </style>
