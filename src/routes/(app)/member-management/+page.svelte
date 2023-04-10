@@ -13,17 +13,21 @@
 	import { userStore } from '../../../lib/store/user.js';
 	import type { ProjectMember } from '../../../lib/interface/project-member';
 	import type { User } from '../../../lib/interface/user';
+	import type { MemberFilter } from '../../../lib/interface/member-filter';
+	import { loadProjectMember } from '../../../lib/service/project-member-service';
 
 	let loading = false;
 	let projectList: Project[] = [];
 	let projectMemberList: ProjectMember[] = [];
 	let userList: User[] = [];
-	let selectedUserFilter: string | undefined;
-	let selectedProjectFilter: string | undefined;
+	let filter: MemberFilter = {
+		project: undefined,
+		user: undefined
+	};
 
 	onMount(async () => {
 		await loadProject();
-		await loadProjectMember();
+		await loadProjectMemberWithFilter();
 		await loadUser();
 	});
 
@@ -56,13 +60,10 @@
 			});
 	}
 
-	async function loadProjectMember(): Promise<void> {
+	async function loadProjectMemberWithFilter(): Promise<void> {
 		loading = false;
 		const token: string = $userStore.token || '';
-		await fetch('api/project-member/list', {
-			method: 'GET',
-			headers: new Headers({ Authorization: `Bearer ${token}` })
-		})
+		await loadProjectMember(filter, token)
 			.then(async (response: Response) => {
 				if (!response.ok) {
 					return Promise.reject(response);
@@ -111,25 +112,29 @@
 			<Select
 				disabled={!loading}
 				variant="outlined"
-				bind:value={selectedProjectFilter}
+				key={(project) => `${project ? project.projectId : ''}`}
+				bind:value={filter.project}
+				on:SMUIMenu:selected={loadProjectMemberWithFilter}
 				label="Filter by project"
 				class="shaped-outlined"
 			>
 				<Option value={undefined} />
-				{#each projectList as project}
-					<Option value={project.projectName}>{project.projectName}</Option>
+				{#each projectList as project (project.projectName)}
+					<Option value={project}>{project.projectName}</Option>
 				{/each}
 			</Select>
 			<Select
 				disabled={!loading}
+				key={(user) => `${user ? user.userId : ''}`}
 				variant="outlined"
-				bind:value={selectedUserFilter}
+				bind:value={filter.user}
+				on:SMUIMenu:selected={loadProjectMemberWithFilter}
 				label="Filter by user"
 				class="shaped-outlined"
 			>
 				<Option value={undefined} />
-				{#each userList as userOption}
-					<Option value={userOption.firstName}>{userOption.firstName} {userOption.lastName}</Option>
+				{#each userList as userOption (userOption.firstName)}
+					<Option value={userOption}>{userOption.firstName} {userOption.lastName}</Option>
 				{/each}
 			</Select>
 		</div>
