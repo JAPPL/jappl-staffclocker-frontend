@@ -1,5 +1,5 @@
 import type { MemberFilter, MemberFilterParam } from '../interface/member-filter';
-import { stringify } from 'query-string';
+import queryString from 'query-string';
 
 export const loadProjectMember = async (param: MemberFilter, token: string): Promise<Response> => {
 	const newParam: MemberFilterParam = {
@@ -12,7 +12,7 @@ export const loadProjectMember = async (param: MemberFilter, token: string): Pro
 	if (!newParam.user) {
 		delete newParam['user'];
 	}
-	return fetch(`api/project-member/list?${stringify(newParam)}`, {
+	return fetch(`api/project-member/list?${queryString.stringify(newParam)}`, {
 		method: 'GET',
 		headers: new Headers({ Authorization: `Bearer ${token}` })
 	});
