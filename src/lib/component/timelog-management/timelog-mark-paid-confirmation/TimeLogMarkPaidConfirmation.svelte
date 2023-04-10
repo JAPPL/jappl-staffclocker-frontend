@@ -8,8 +8,8 @@
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
-	export let openDeleteDialog = false;
-	export let selectedTimeLogForDelete: TimeLog | undefined;
+	export let openMarkPaidDialog = false;
+	export let selectedTimeLogForMarkPaid: TimeLog | undefined;
 
 	async function handleErrorResponse(response: Response): Promise<void> {
 		if (response.status == 400) {
@@ -24,20 +24,20 @@
 		}
 	}
 
-	async function deleteTimeLog(timelog: TimeLog | undefined) {
+	async function markTimeLogPaid(timelog: TimeLog | undefined) {
 		if (timelog) {
 			const token: string = $userStore.token || '';
-			await fetch(`api/timelog/delete/${timelog.id}`, {
-				method: 'DELETE',
+			await fetch(`api/timelog/mark_as_paid/${timelog.id}`, {
+				method: 'PATCH',
 				headers: new Headers({ Authorization: `Bearer ${token}` })
 			}).then(async (response: Response) => {
 				if (!response.ok) {
 					await handleErrorResponse(response);
 				} else {
-					toast.success(`Delete timelog ${timelog.id} successfully.`);
+					toast.success(`Mark timelog ${timelog.id} as Paid successfully.`);
 					dispatch('loadTimeLog', true);
 				}
-				selectedTimeLogForDelete = undefined;
+				selectedTimeLogForMarkPaid = undefined;
 			});
 		} else {
 			toast.error('No timelog selected.');
@@ -47,22 +47,27 @@
 
 <div>
 	<Dialog
-		bind:open={openDeleteDialog}
+		bind:open={openMarkPaidDialog}
 		scrimClickAction=""
 		escapeKeyAction=""
 		aria-labelledby="mandatory-title"
 		aria-describedby="mandatory-content"
 	>
-		<Title id="mandatory-title">TimeLog Delete Confirmation</Title>
-		<Content id="mandatory-content">Are you sure to delete this timelog?</Content>
+		<Title id="mandatory-title" data-testid="mandatory-title-mark-paid"
+			>TimeLog Mark as Paid Confirmation</Title
+		>
+		<Content id="mandatory-content" data-testid="mandatory-content-mark-paid"
+			>Are you sure to mark this timelog as paid?</Content
+		>
 		<Actions>
-			<Button action="close">
+			<Button action="close" data-testid="mark-paid-close-button">
 				<Label>Close</Label>
 			</Button>
 			<Button
 				color="secondary"
 				variant="unelevated"
-				on:click={deleteTimeLog(selectedTimeLogForDelete)}
+				data-testid="mark-paid-confirm-button"
+				on:click={markTimeLogPaid(selectedTimeLogForMarkPaid)}
 			>
 				<Label>Confirm</Label>
 			</Button>
