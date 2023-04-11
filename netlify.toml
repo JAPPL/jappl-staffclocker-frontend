@@ -1,3 +1,8 @@
 [build]
-  command = "npm run build"
-  publish = "build"
+    command = "npm run build"
+    publish = "build"
+
+[[redirects]]
+    from = "/api/*"
+    to = "https://staffclocker.azurewebsites.net"
+    status = 301
