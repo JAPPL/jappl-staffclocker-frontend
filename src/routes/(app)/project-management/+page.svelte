@@ -43,7 +43,7 @@
 	async function loadProject(): Promise<void> {
 		loading = false;
 		const token: string = $userStore.token || '';
-		await fetch('api/project/', {
+		await fetch('https://staffclocker.azurewebsites.net/api/project/', {
 			method: 'GET',
 			headers: new Headers({ Authorization: `Bearer ${token}` })
 		})
