@@ -9,14 +9,14 @@
 	import type { ErrorResponse } from '../../../interface/error-response';
 	import toast from 'svelte-french-toast';
 	import { createEventDispatcher } from 'svelte';
-	import type { TimeLog } from '$lib/interface/timelog';
+	import type { TimeLog } from '../../../interface/timelog';
 
 	const dispatch = createEventDispatcher();
 
 	export let loadingDialog = true;
-	export let message = field('message', '', [required()]);
 	export let id = field('id', 0);
 	export let hour_spent = field('hour_spent', 0, [required()]);
+	export let message = field('message', '', [required()]);
 	export let projectId = field('projectId', 0);
 	export let timeLogForm = form(message, hour_spent, id, projectId);
 	export let openEditDialog = false;
@@ -57,8 +57,8 @@
 		formData.append('hour_spent', $hour_spent.value.toString());
 		formData.append('projectId', $projectId.value.toString());
 		console.log(formData);
-		await fetch(`api/timelog/update/${(selectedTimeLogForEdit as TimeLog).projectId}`, {
-			method: 'PUT',
+		await fetch(`api/timelog/update/${(selectedTimeLogForEdit as TimeLog).projectId.projectId}`, {
+			method: 'PATCH',
 			headers: new Headers({ Authorization: `Bearer ${token}` }),
 			body: formData
 		})

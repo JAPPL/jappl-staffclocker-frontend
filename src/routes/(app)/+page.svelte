@@ -92,6 +92,7 @@
 			bind:timelogs={allTimeLog}
 			bind:filteredTimeLogs={filteredTimeLog}
 			bind:loadingTimelog
+			on:loadTimeLog={loadTimeLog}
 		/>
 	</Card>
 </div>

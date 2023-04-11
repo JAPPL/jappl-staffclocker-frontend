@@ -10,6 +10,9 @@
 	import Icon from 'mdi-svelte';
 	import { mdiPencil, mdiCheckCircleOutline, mdiDelete, mdiMinusCircleOutline } from '@mdi/js';
 	import Button from '@smui/button';
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
 
 	export let projectList: Project[] = [];
 	export let loadingProject = false;
@@ -56,6 +59,10 @@
 				timelog.projectId.projectName === selectedProject
 		));
 	};
+
+	function emitLoadTimeLogEvent() {
+		dispatch('loadTimeLog', true);
+	}
 
 	function toggleDeleteDialog(timelog: TimeLog): void {
 		selectedTimeLogForDelete = timelog;
@@ -173,17 +180,17 @@
 	<TimeLogDeleteConfirmation
 		bind:openDeleteDialog
 		bind:selectedTimeLogForDelete
-		on:loadTimeLog={loadingTimelog}
+		on:loadTimeLog={emitLoadTimeLogEvent}
 	/>
 	<TimeLogEditConfirmation
 		bind:openEditDialog
 		bind:selectedTimeLogForEdit
-		on:loadTimeLog={loadingTimelog}
+		on:loadTimeLog={emitLoadTimeLogEvent}
 	/>
 	<TimeLogMarkPaidConfirmation
 		bind:openMarkPaidDialog
 		bind:selectedTimeLogForMarkPaid
-		on:loadTimeLog={loadingTimelog}
+		on:loadTimeLog={emitLoadTimeLogEvent}
 	/>
 </div>
 
