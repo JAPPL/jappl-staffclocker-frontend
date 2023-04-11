@@ -10,6 +10,7 @@ interface ImportMetaEnv {
 	readonly VITE_FIREBASE_CLIENT_MESSAGINGSENDERID: string;
 	readonly VITE_FIREBASE_CLIENT_APPID: string;
 	readonly VITE_FIREBASE_CLIENT_MEASUREMENTID: string;
+	readonly VITE_APP_BACKEND: string;
 }
 
 interface ImportMeta {

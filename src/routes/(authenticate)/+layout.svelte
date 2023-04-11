@@ -3,7 +3,7 @@
 </script>
 
 <Toaster />
-<img src="src/lib/images/logo-dark.png" class="logo-size" alt="logo" />
+<img src="logo-dark.png" class="logo-size" alt="logo" />
 <slot />
 
 <style>

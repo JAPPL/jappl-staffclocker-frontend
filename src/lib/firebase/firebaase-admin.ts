@@ -3,7 +3,6 @@ import { firebaseAdminConfig } from '../config/firebase-admin-config';
 import { getAuth, type Auth, type DecodedIdToken } from 'firebase-admin/auth';
 
 export const getAdminApp = (): App => {
-	// console.log(firebaseAdminConfig);
 	if (getApps().length) {
 		return getApp();
 	}

@@ -31,7 +31,7 @@
 						picture: user?.picture || '',
 						token: token
 					});
-					await goto('/timelog');
+					await goto('/');
 				} else if (response.status == 500) {
 					toast.error('Internal server error');
 				} else {
@@ -54,7 +54,7 @@
 						<h1 style="margin-bottom: 15px;">Welcome to JAPPL</h1>
 					</Cell>
 					<Cell span={3}>
-						<img src="src/lib/images/user.png" class="user-image-size" alt="user" />
+						<img src="user.png" class="user-image-size" alt="user" />
 					</Cell>
 				</LayoutGrid>
 
@@ -72,7 +72,7 @@
 						disabled={loading}
 						on:click={login}
 					>
-						<img src="src/lib/images/google.png" class="google-logo" alt="logo" />
+						<img src="google.png" class="google-logo" alt="logo" />
 						<Label>Login with Google</Label>
 					</Button>
 				</div>
@@ -117,7 +117,6 @@
 
 	.google-logo {
 		width: 25px;
-		height: fit-content;
 		margin-right: 10px;
 	}
 

@@ -1,20 +1,10 @@
 import { render, screen } from '@testing-library/svelte';
 import ProjectDialog from './ProjectDialog.svelte';
 import { beforeEach, describe } from 'vitest';
-import type { Project } from '../../../interface/project';
-import type { ErrorResponse } from '../../../interface/error-response';
 
 global.fetch = vi.fn();
 
 describe('ProjectDialog', async () => {
-	function createFetchResponse(data: Project | ErrorResponse | null, status: number) {
-		return {
-			json: () => new Promise((resolve) => resolve(data)),
-			status: status,
-			ok: status == 200
-		};
-	}
-
 	describe('Create mode', async () => {
 		beforeEach(() => {
 			render(ProjectDialog);

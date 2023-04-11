@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { userStore } from '../../../lib/store/user.js';
+	import Card from '@smui/card';
 	import Select, { Option } from '@smui/select';
 	import type { ErrorResponse } from '../../../lib/interface/error-response';
 	import DataTable, { Head, Body, Row, Cell, Label, SortValue } from '@smui/data-table';
@@ -20,6 +21,23 @@
 		mdiMinusCircleOutline
 	} from '@mdi/js';
 	import Button from '@smui/button';
+
+	let timelogs: TimeLog[] = [];
+	let filteredTimeLogs: TimeLog[] = [];
+	let projectList: Project[] = [];
+	let userList: User[] = [];
+	let selectedProject = ' ';
+	let selectedUser = ' ';
+	let openDeleteDialog = false;
+	let selectedTimeLogForDelete: TimeLog | undefined;
+	let openApproveDialog = false;
+	let selectedTimeLogForApprove: TimeLog | undefined;
+	let openMarkPaidDialog = false;
+	let selectedTimeLogForMarkPaid: TimeLog | undefined;
+
+	let sort: keyof TimeLog = 'timestamp';
+	let sortDirection: Lowercase<keyof typeof SortValue> = 'ascending';
+	let loading = false;
 
 	async function handleErrorResponse(response: Response): Promise<void> {
 		if (response.status == 500) {
@@ -98,17 +116,6 @@
 		await loadUsers();
 	});
 
-	let timelogs: TimeLog[] = [];
-	let filteredTimeLogs: TimeLog[] = [];
-	let projectList: Project[] = [];
-	let userList: User[] = [];
-	let selectedProject = ' ';
-	let selectedUser = ' ';
-
-	let sort: keyof TimeLog = 'timestamp';
-	let sortDirection: Lowercase<keyof typeof SortValue> = 'ascending';
-	let loading = false;
-
 	function formatDate(date: string) {
 		return date.split('T')[0];
 	}
@@ -136,24 +143,15 @@
 		));
 	};
 
-	let openDeleteDialog = false;
-	let selectedTimeLogForDelete: TimeLog | undefined;
-
 	function toggleDeleteDialog(timelog: TimeLog): void {
 		selectedTimeLogForDelete = timelog;
 		openDeleteDialog = true;
 	}
 
-	let openApproveDialog = false;
-	let selectedTimeLogForApprove: TimeLog | undefined;
-
 	function toggleApproveDialog(timelog: TimeLog): void {
 		selectedTimeLogForApprove = timelog;
 		openApproveDialog = true;
 	}
-
-	let openMarkPaidDialog = false;
-	let selectedTimeLogForMarkPaid: TimeLog | undefined;
 
 	function toggleMarkPaidDialog(timelog: TimeLog): void {
 		selectedTimeLogForMarkPaid = timelog;
@@ -161,85 +159,136 @@
 	}
 </script>
 
-<div id="rcorners1">
-	<DataTable
-		style="margin: 25px; 
-				width: 95%;
-				min-height: 80%;"
-		table$aria-label="Time Log List"
-		sortable
-		bind:sort
-		bind:sortDirection
-	>
+<div class="container">
+	<Card style="padding: 20px;">
+		<div style="margin-bottom: 16px">
+			<h2 class="mdc-typography--headline6" style="margin-top: 0;">Timelog Management</h2>
+			<Select
+				class="shaped-outlined"
+				variant="outlined"
+				label="Filter by Project"
+				bind:value={selectedProject}
+			>
+				<Option value=" " />
+				{#each projectList as project}
+					<Option value={project.projectName}>{project.projectName}</Option>
+				{/each}
+			</Select>
+			<Select
+				class="shaped-outlined"
+				variant="outlined"
+				label="Filter by User"
+				bind:value={selectedUser}
+			>
+				<Option value=" " />
+				{#each userList as user}
+					<Option value="{user.firstName}{user.lastName}">{user.firstName} {user.lastName}</Option>
+				{/each}
+			</Select>
+		</div>
 		<div class="table-container">
-			<Head>
-				<div style="margin-left: 20px;">
-					<h2 class="mdc-typography--headline6" style="margin-top: 15px;">Timelog Management</h2>
-				</div>
-				<div style="padding-left: 20px;">
-					<Select
-						class="shaped-outlined"
-						variant="outlined"
-						label="Filter by Project"
-						bind:value={selectedProject}
-					>
-						<Option value=" " />
-						{#each projectList as project}
-							<Option value={project.projectName}>{project.projectName}</Option>
-						{/each}
-					</Select>
-					<Select
-						class="shaped-outlined"
-						variant="outlined"
-						label="Filter by User"
-						bind:value={selectedUser}
-					>
-						<Option value=" " />
-						{#each userList as user}
-							<Option value="{user.firstName}{user.lastName}"
-								>{user.firstName} {user.lastName}</Option
-							>
-						{/each}
-					</Select>
-				</div>
-				<Row>
-					<Cell columnId="employee">
-						<Label>Employee Name</Label>
-					</Cell>
-					<Cell columnId="project" style="width: 100%;">
-						<Label>Project</Label>
-					</Cell>
-					<Cell columnId="date">
-						<Label>Date</Label>
-					</Cell>
-					<Cell columnId="hours" style="width: 100%;">
-						<Label>Hours</Label>
-					</Cell>
-					<Cell columnId="approved">
-						<Label>Approved</Label>
-					</Cell>
-					<Cell columnId="actions">
-						<Label>Actions</Label>
-					</Cell>
-				</Row>
-			</Head>
-			<Body>
-				{#each filteredTimeLogs as timelog}
+			<DataTable
+				style="width: 100%;"
+				table$aria-label="Time Log List"
+				sortable
+				bind:sort
+				bind:sortDirection
+			>
+				<Head>
+					<title>Time Log list</title>
 					<Row>
-						<Cell>{timelog.userId.firstName} {timelog.userId.lastName}</Cell>
-						<Cell>{timelog.projectId.projectName}</Cell>
-						<Cell>{formatDate(timelog.timestamp)}</Cell>
-						<Cell style="padding-left: 28px;">{timelog.hourSpent}</Cell>
-						<Cell>
-							{#if timelog.approved}
-								<Icon path={mdiCheckCircleOutline} color="green" style="padding-left: 15px;" />
-							{:else}
-								<Icon path={mdiMinusCircleOutline} color="red" style="padding-left: 15px;" />
-							{/if}
+						<Cell columnId="employee">
+							<Label>Employee Name</Label>
 						</Cell>
-						<Cell>
-							{#if timelog.approved}
-								{#if timelog.paid}
+						<Cell columnId="project" style="width: 10%;">
+							<Label>Project</Label>
+						</Cell>
+						<Cell columnId="project" style="width: 100%;">
+							<Label>Description</Label>
+						</Cell>
+						<Cell columnId="date">
+							<Label>Date</Label>
+						</Cell>
+						<Cell columnId="hours" style="width: 10%;">
+							<Label>Hours</Label>
+						</Cell>
+						<Cell columnId="approved">
+							<Label>Approved</Label>
+						</Cell>
+						<Cell columnId="actions">
+							<Label>Actions</Label>
+						</Cell>
+					</Row>
+				</Head>
+				<Body>
+					{#each filteredTimeLogs as timelog}
+						<Row>
+							<Cell>{timelog.userId.firstName} {timelog.userId.lastName}</Cell>
+							<Cell>{timelog.projectId.projectName}</Cell>
+							<Cell style="width: 10px">
+								<span style="word-break: break-all">
+									{timelog.message}
+								</span>
+							</Cell>
+							<Cell>{formatDate(timelog.timestamp)}</Cell>
+							<Cell style="padding-left: 28px;">{timelog.hourSpent}</Cell>
+							<Cell>
+								<div style="display: flex; justify-content: center">
+									{#if timelog.approved}
+										<Icon path={mdiCheckCircleOutline} color="green" />
+									{:else}
+										<Icon path={mdiMinusCircleOutline} color="red" />
+									{/if}
+								</div>
+							</Cell>
+							<Cell>
+								{#if timelog.approved}
+									{#if timelog.paid}
+										<Button
+											color="secondary"
+											on:click={() => {
+												toggleMarkPaidDialog(timelog);
+											}}
+											disabled
+											variant="raised"
+										>
+											<Icon path={mdiCashCheck} />
+											<Label style="padding-left: 3px;">Mark as Paid</Label>
+										</Button>
+									{:else}
+										<Button
+											color="secondary"
+											on:click={() => {
+												toggleMarkPaidDialog(timelog);
+											}}
+											variant="raised"
+										>
+											<Icon path={mdiCashCheck} />
+											<Label style="padding-left: 3px;">Mark as Paid</Label>
+										</Button>
+									{/if}
+									<Button
+										color="secondary"
+										on:click={() => {
+											toggleApproveDialog(timelog);
+										}}
+										disabled
+										variant="raised"
+									>
+										<Icon path={mdiCheckDecagramOutline} />
+										<Label style="padding-left: 3px;">Approve</Label>
+									</Button>
+									<Button
+										on:click={() => {
+											toggleDeleteDialog(timelog);
+										}}
+										disabled
+										variant="raised"
+									>
+										<Icon path={mdiDelete} />
+										<Label style="padding-left: 3px;">Delete</Label>
+									</Button>
+								{:else}
 									<Button
 										color="secondary"
 										on:click={() => {
@@ -248,109 +297,61 @@
 										disabled
 										variant="raised"
 									>
-										<Icon path={mdiCashCheck} style="padding-right: 3px;" />
+										<Icon path={mdiCashCheck} />
 										<Label style="padding-left: 3px;">Mark as Paid</Label>
 									</Button>
-								{:else}
 									<Button
 										color="secondary"
 										on:click={() => {
-											toggleMarkPaidDialog(timelog);
+											toggleApproveDialog(timelog);
 										}}
 										variant="raised"
 									>
-										<Icon path={mdiCashCheck} style="padding-right: 3px;" />
-										<Label style="padding-left: 3px;">Mark as Paid</Label>
+										<Icon path={mdiCheckDecagramOutline} />
+										<Label style="padding-left: 3px;">Approve</Label>
+									</Button>
+									<Button
+										on:click={() => {
+											toggleDeleteDialog(timelog);
+										}}
+										variant="raised"
+									>
+										<Icon path={mdiDelete} />
+										<Label style="padding-left: 3px;">Delete</Label>
 									</Button>
 								{/if}
-								<Button
-									color="secondary"
-									on:click={() => {
-										toggleApproveDialog(timelog);
-									}}
-									disabled
-									variant="raised"
-								>
-									<Icon path={mdiCheckDecagramOutline} style="padding-right: 3px;" />
-									<Label style="padding-left: 3px;">Approve</Label>
-								</Button>
-								<Button
-									on:click={() => {
-										toggleDeleteDialog(timelog);
-									}}
-									disabled
-									variant="raised"
-								>
-									<Icon path={mdiDelete} style="padding-right: 3px;" />
-									<Label style="padding-left: 3px;">Delete</Label>
-								</Button>
-							{:else}
-								<Button
-									color="secondary"
-									on:click={() => {
-										toggleMarkPaidDialog(timelog);
-									}}
-									disabled
-									variant="raised"
-								>
-									<Icon path={mdiCashCheck} style="padding-right: 3px;" />
-									<Label style="padding-left: 3px;">Mark as Paid</Label>
-								</Button>
-								<Button
-									color="secondary"
-									on:click={() => {
-										toggleApproveDialog(timelog);
-									}}
-									variant="raised"
-								>
-									<Icon path={mdiCheckDecagramOutline} style="padding-right: 3px;" />
-									<Label style="padding-left: 3px;">Approve</Label>
-								</Button>
-								<Button
-									on:click={() => {
-										toggleDeleteDialog(timelog);
-									}}
-									variant="raised"
-								>
-									<Icon path={mdiDelete} style="padding-right: 3px;" />
-									<Label style="padding-left: 3px;">Delete</Label>
-								</Button>
-							{/if}
-						</Cell>
-					</Row>
-				{/each}
-			</Body>
+							</Cell>
+						</Row>
+					{/each}
+				</Body>
+			</DataTable>
 		</div>
-	</DataTable>
-	<TimeLogDeleteConfirmation
-		bind:openDeleteDialog
-		bind:selectedTimeLogForDelete
-		on:loadTimeLog={loadTimeLog}
-	/>
-	<TimeLogApproveConfirmation
-		bind:openApproveDialog
-		bind:selectedTimeLogForApprove
-		on:loadTimeLog={loadTimeLog}
-	/>
-	<TimeLogMarkPaidConfirmation
-		bind:openMarkPaidDialog
-		bind:selectedTimeLogForMarkPaid
-		on:loadTimeLog={loadTimeLog}
-	/>
+		<TimeLogDeleteConfirmation
+			bind:openDeleteDialog
+			bind:selectedTimeLogForDelete
+			on:loadTimeLog={loadTimeLog}
+		/>
+		<TimeLogApproveConfirmation
+			bind:openApproveDialog
+			bind:selectedTimeLogForApprove
+			on:loadTimeLog={loadTimeLog}
+		/>
+		<TimeLogMarkPaidConfirmation
+			bind:openMarkPaidDialog
+			bind:selectedTimeLogForMarkPaid
+			on:loadTimeLog={loadTimeLog}
+		/>
+	</Card>
 </div>
 
 <style>
-	#rcorners1 {
-		border-radius: 20px;
-		background: white;
-		margin: 25px;
-		width: auto;
-		height: 100%;
+	.container:global(.mdc-card) {
+		padding: 20px;
 	}
 
 	.table-container {
-		min-height: 80vh;
-		background: white;
-		border: none;
+		width: 100%;
+		max-height: 75vh;
+		overflow-y: auto;
 	}
 </style>

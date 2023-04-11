@@ -1,4 +1,4 @@
-name: Test and Coverage
+name: Frontend CI/CD
 
 on: [push, pull_request]
 
@@ -14,10 +14,25 @@ env:
   VITE_FIREBASE_CLIENT_MESSAGINGSENDERID: ${{ secrets.VITE_FIREBASE_CLIENT_MESSAGINGSENDERID }}
   VITE_FIREBASE_CLIENT_APPID: ${{ secrets.VITE_FIREBASE_CLIENT_APPID }}
   VITE_FIREBASE_CLIENT_MEASUREMENTID: ${{ secrets.VITE_FIREBASE_CLIENT_MEASUREMENTID }}
+  VITE_APP_BACKEND: ${{ secrets.VITE_APP_BACKEND }}
 
 jobs:
+  eslint-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+      - name: Install Dependencies
+        run: npm ci
+      - name: Run ESLint
+        run: npm run lint
   test-coverage:
     name: Test
+    needs: eslint-check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -52,3 +67,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  deploy:
+    name: Deploy to Netlify
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs: test-coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jsmrcaga/action-netlify-deploy@v2.0.0
+        with:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_DEPLOY_MESSAGE: 'Prod deploy v${{ github.ref }}'
+          NETLIFY_DEPLOY_TO_PROD: true
