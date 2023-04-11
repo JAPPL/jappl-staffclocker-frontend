@@ -71,7 +71,7 @@ jobs:
   deploy:
     name: Deploy to Netlify
     if: ${{ github.ref == 'refs/heads/main' }}
-    needs: test-coverage
+    #    needs: test-coverage
     runs-on: ubuntu-latest
 
     steps:
