@@ -18,6 +18,7 @@
 
 	export let projectList: Project[] = [];
 	export let loadingProject = false;
+	export let filteredProject: Project[] = [];
 
 	export let timelogs: TimeLog[] = [];
 	export let filteredTimeLogs: TimeLog[] = [];
@@ -76,9 +77,19 @@
 		openDeleteDialog = true;
 	}
 
+	function checkUserInSelectedProject(selectedProject: Project): Project | undefined {
+		return filteredProject.find(
+			(project: Project) => project.projectId == selectedProject.projectId
+		);
+	}
+
 	function toggleEditDialog(timelog: TimeLog): void {
+		if (checkUserInSelectedProject(timelog.projectId)) {
+			$projectId.value = timelog.projectId.projectId;
+		} else {
+			$projectId.value = 0;
+		}
 		$id.value = timelog.id;
-		$projectId.value = timelog.projectId.projectId;
 		$hourSpent.value = timelog.hourSpent;
 		$message.value = timelog.message;
 		openEditDialog = true;
@@ -199,7 +210,7 @@
 		bind:message
 		bind:projectId
 		bind:timeLogForm
-		bind:projectOptions={projectList}
+		bind:projectOptions={filteredProject}
 		on:loadTimeLog={emitLoadTimeLogEvent}
 	/>
 	<TimeLogMarkPaidConfirmation

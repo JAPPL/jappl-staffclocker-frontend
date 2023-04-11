@@ -16,6 +16,7 @@
 
 	const dispatch = createEventDispatcher();
 	export let projectList: Project[] = [];
+	export let loadProject = false;
 
 	let message = field('message', '', [required()]);
 	let hourSpent = field('hourSpent', 1, [min(1)]);
@@ -134,7 +135,7 @@
 					<Select
 						style="width: 100%;"
 						variant="outlined"
-						disabled={loading}
+						disabled={loading || loadProject}
 						invalid={$timeLogForm.hasError('project.min')}
 						key={(project) => `${project ? project : 0}`}
 						bind:value={$project.value}
@@ -165,6 +166,7 @@
 			<Button
 				color="secondary"
 				on:click={() => saveTimeLog()}
+				disabled={loading || loadProject}
 				variant="unelevated"
 				class="button-shaped-round"
 			>

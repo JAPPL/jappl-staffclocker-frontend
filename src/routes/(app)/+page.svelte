@@ -10,17 +10,21 @@
 	import toast from 'svelte-french-toast';
 	import type { ErrorResponse } from '../../lib/interface/error-response';
 	import type { TimeLog } from '../../lib/interface/timelog';
+	import type { ProjectMember } from '../../lib/interface/project-member';
 
 	let allProjects: Project[] = [];
+	let filteredProjects: Project[] = [];
 	let allTimeLog: TimeLog[] = [];
 	let filteredTimeLog: TimeLog[] = [];
 	let loadingProject = false;
+	let loadingFilteredProject = false;
 	let loadingTimelog = true;
 	let totalHour = 0;
 
 	onMount(async () => {
 		await loadProject();
 		await loadTimeLog();
+		await loadProjectMember();
 	});
 
 	async function handleErrorResponse(response: Response): Promise<void> {
@@ -30,6 +34,29 @@
 			let err: ErrorResponse = await response.json();
 			toast.error(err.detail);
 		}
+	}
+
+	async function loadProjectMember(): Promise<void> {
+		loadingFilteredProject = true;
+		const token: string = $userStore.token || '';
+		await fetch('api/project-member/list', {
+			method: 'GET',
+			headers: new Headers({ Authorization: `Bearer ${token}` })
+		})
+			.then(async (response: Response) => {
+				if (!response.ok) {
+					return Promise.reject(response);
+				} else {
+					const allProjectMembers: ProjectMember[] = await response.json();
+					filteredProjects = allProjectMembers
+						.filter((member: ProjectMember) => member.user.email === $userStore.email)
+						.map((member: ProjectMember) => member.project);
+					loadingFilteredProject = false;
+				}
+			})
+			.catch((response: Response) => {
+				handleErrorResponse(response);
+			});
 	}
 
 	async function loadProject(): Promise<void> {
@@ -85,7 +112,11 @@
 	<LayoutGrid style="padding: 0 0 30px 0">
 		<Cell span={9}>
 			<Card style="width: 100%; padding: 20px; height: 100%">
-				<ClockYourTime bind:projectList={allProjects} on:loadTimeLog={loadTimeLog} />
+				<ClockYourTime
+					bind:projectList={filteredProjects}
+					on:loadTimeLog={loadTimeLog}
+					bind:loadProject={loadingFilteredProject}
+				/>
 			</Card>
 		</Cell>
 		<Cell span={3}>
@@ -97,7 +128,7 @@
 	<Card style="width: 100%; padding: 20px">
 		<TimeLogList
 			bind:projectList={allProjects}
-			bind:loadingProject
+			bind:filteredProject={filteredProjects}
 			bind:timelogs={allTimeLog}
 			bind:filteredTimeLogs={filteredTimeLog}
 			bind:loadingTimelog
