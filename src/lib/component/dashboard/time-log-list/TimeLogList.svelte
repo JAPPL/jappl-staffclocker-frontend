@@ -11,6 +11,8 @@
 	import { mdiPencil, mdiCheckCircleOutline, mdiDelete, mdiMinusCircleOutline } from '@mdi/js';
 	import Button from '@smui/button';
 	import { createEventDispatcher } from 'svelte';
+	import { field, form } from 'svelte-forms';
+	import { min, required } from 'svelte-forms/validators';
 
 	const dispatch = createEventDispatcher();
 
@@ -28,7 +30,12 @@
 	let openDeleteDialog = false;
 	let selectedTimeLogForDelete: TimeLog | undefined;
 	let openEditDialog = false;
-	let selectedTimeLogForEdit: TimeLog | undefined;
+
+	let id = field('id', 0);
+	let hourSpent = field('hourSpent', 0, [min(1)]);
+	let message = field('message', '', [required()]);
+	let projectId = field('projectId', 0, [min(1)]);
+	let timeLogForm = form(message, hourSpent, id, projectId);
 
 	let sort: keyof TimeLog = 'timestamp';
 	let sortDirection: Lowercase<keyof typeof SortValue> = 'ascending';
@@ -70,8 +77,14 @@
 	}
 
 	function toggleEditDialog(timelog: TimeLog): void {
-		selectedTimeLogForEdit = timelog;
+		console.log(timelog.projectId.projectId, $projectId.value, timelog);
+		$id.value = timelog.id;
+		$projectId.value = timelog.projectId.projectId;
+		$hourSpent.value = timelog.hourSpent;
+		$message.value = timelog.message;
+		console.log($projectId.value);
 		openEditDialog = true;
+		console.log($projectId.value);
 	}
 </script>
 
@@ -184,7 +197,12 @@
 	/>
 	<TimeLogEditConfirmation
 		bind:openEditDialog
-		bind:selectedTimeLogForEdit
+		bind:id
+		bind:hourSpent
+		bind:message
+		bind:projectId
+		bind:timeLogForm
+		bind:projectOptions={projectList}
 		on:loadTimeLog={emitLoadTimeLogEvent}
 	/>
 	<TimeLogMarkPaidConfirmation
