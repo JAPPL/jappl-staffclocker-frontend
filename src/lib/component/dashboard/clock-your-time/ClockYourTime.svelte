@@ -2,18 +2,16 @@
 	import LayoutGrid, { Cell } from '@smui/layout-grid';
 	import Textfield from '@smui/textfield';
 	import Select, { Option } from '@smui/select';
-	import { DateInput } from 'date-picker-svelte';
-	import type { Project } from '$lib/interface/project';
-	import type { ErrorResponse } from '$lib/interface/error-response';
 	import { userStore } from '$lib/store/user';
-	import { onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
+	import Button, { Label } from '@smui/button';
 
 	import Flatpickr from 'svelte-flatpickr';
 
 	import 'flatpickr/dist/flatpickr.css';
 	import 'flatpickr/dist/themes/light.css';
-	import Body from '@smui/data-table/src/Body.svelte';
+	import type { ErrorResponse } from '../../../interface/error-response';
+	import type { Project } from '../../../interface/project';
 
 	let date: Date | null = null;
 	const flatpickrOptions = {
@@ -28,16 +26,13 @@
 		]
 	};
 
+	export let projectList: Project[] = [];
+
 	let describeWork = '';
 	let project: Project | null = null;
 	let hourSpent: number | null = 1;
 	let valueC: number | null = 1;
 	let loading = false;
-	let projectList: Project[] = [];
-
-	onMount(async () => {
-		await loadProject();
-	});
 
 	async function handleErrorResponse(response: Response): Promise<void> {
 		if (response.status == 500) {
@@ -48,37 +43,18 @@
 		}
 	}
 
-	async function loadProject(): Promise<void> {
-		loading = false;
-		const token: string = $userStore.token || '';
-		await fetch('api/project/', {
-			method: 'GET',
-			headers: new Headers({ Authorization: `Bearer ${token}` })
-		})
-			.then(async (response: Response) => {
-				if (!response.ok) {
-					return Promise.reject(response);
-				} else {
-					projectList = await response.json();
-					loading = true;
-				}
-			})
-			.catch((response: Response) => {
-				handleErrorResponse(response);
-			});
-	}
-
 	async function saveTimeLog(): Promise<void> {
 		loading = false;
 		const token: string = $userStore.token || '';
-		console.log(
-			JSON.stringify({
-				hour_spent: hourSpent,
-				message: describeWork,
-				project_id: project?.projectId,
-				timestamp: new Date(new Date().setDate(date!.getDate()))
-			})
-		);
+		// TODO: Add form validator here to handle negative case
+		// console.log(
+		// 	JSON.stringify({
+		// 		hour_spent: hourSpent,
+		// 		message: describeWork,
+		// 		project_id: project?.projectId,
+		// 		timestamp: new Date(new Date().setDate(date!.getDate()))
+		// 	})
+		// );
 		await fetch('api/timelog/create', {
 			method: 'POST',
 			body: JSON.stringify({
@@ -93,7 +69,7 @@
 				if (!response.ok) {
 					return Promise.reject(response);
 				} else {
-					console.log('cowabunga');
+					toast.success('Add new time log successfully.');
 				}
 			})
 			.catch((response: Response) => {
@@ -102,7 +78,7 @@
 	}
 </script>
 
-<div class="container" style="height: 100%; margin: 0%; display: flex; flex-direction: column;">
+<div class="container" style="height: 100%; margin: 0; display: flex; flex-direction: column;">
 	<Cell span={12} style="flex-grow: 1;">
 		<div style="height: 100%; display: flex; flex-direction: column;">
 			<div>
@@ -152,7 +128,7 @@
 						<div class="rcorners2">
 							<Select
 								style="width: 95%;"
-								key={(value) => `${value == '' ? 'Select' : value}`}
+								key={(value) => `${value === '' ? 'Select' : value}`}
 								bind:value={project}
 							>
 								<Option />
@@ -186,9 +162,14 @@
 						<div>
 							<h1><br /></h1>
 						</div>
-						<button on:click={saveTimeLog} class="button">
-							<h1>Save</h1>
-						</button>
+						<Button
+							color="secondary"
+							on:click={() => saveTimeLog()}
+							variant="unelevated"
+							class="button-shaped-round"
+						>
+							<Label>Save</Label>
+						</Button>
 					</div>
 				</Cell>
 			</LayoutGrid>
@@ -242,16 +223,7 @@
 	.container :global(.mdc-text-field__resizer) {
 		resize: none;
 	}
-	.button {
-		border: none;
-		padding: 0px;
-		margin: 0px;
-		border-radius: 15px;
-		background: #51b198;
-		height: 44px;
-		vertical-align: middle;
-		flex-grow: 1;
-	}
+
 	div > h1 {
 		margin: 0;
 		margin-bottom: 10px;
@@ -260,12 +232,7 @@
 		text-align: left;
 		color: #130f42;
 	}
-	button > h1 {
-		margin: 0;
-		font-family: 'Inter', sans-serif;
-		font-size: 20px;
-		color: #130f42;
-	}
+
 	.logo-size {
 		font-size: 20px;
 		color: #130f42;
