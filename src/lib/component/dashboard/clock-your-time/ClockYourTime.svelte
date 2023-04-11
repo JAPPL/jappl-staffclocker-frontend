@@ -31,7 +31,6 @@
 	let describeWork = '';
 	let project: Project | null = null;
 	let hourSpent: number | null = 1;
-	let valueC: number | null = 1;
 	let loading = false;
 
 	async function handleErrorResponse(response: Response): Promise<void> {
