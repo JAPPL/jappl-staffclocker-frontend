@@ -1,28 +1,50 @@
-<script>
+<script lang="ts">
 	import { Cell } from '@smui/layout-grid';
 	import LayoutGrid from '@smui/layout-grid/src/LayoutGrid.svelte';
+	import { userStore } from '../../../store/user';
+	import Button from '@smui/button';
+
+	export let totalHour = 0;
 </script>
 
-<div class="container" style="height: 100%; width: 100%; padding: 0%; border: 2px solid black;">
-	<h>This will display profile</h>
+<div class="container" style="height: 100%; width: 100%; padding: 0%;">
 	<LayoutGrid style="width: 100%;">
 		<Cell span={6}>
-			<div class="rcorners1">Yes</div>
+			<div style="display: flex; justify-content: center; align-items: center;">
+				<img src={$userStore.picture} alt="W3Schools.com" style="border-radius: 50%;" />
+			</div>
 		</Cell>
 		<Cell span={6}>
-			<div class="rcorners1">Yes</div>
+			<div style="display: flex; justify-content: center;">
+				<h2>{$userStore.name}</h2>
+			</div>
+		</Cell>
+		<Cell span={12}>
+			<div style="display: flex; align-items: top;">
+				<h2>Total Hours</h2>
+			</div>
+		</Cell>
+		<Cell span={12}>
+			<div style="display: flex; justify-content: center; align-items: top;">
+				<h1>{totalHour} Hr</h1>
+			</div>
+		</Cell>
+		<Cell span={12}>
+			<div style="display: flex; justify-content: center; align-items: center;">
+				<Button
+					color="secondary"
+					on:click={() => console.log('cowagunga')}
+					variant="unelevated"
+					class="button-shaped-round"
+				>
+					<h2>Log Out</h2>
+				</Button>
+			</div>
 		</Cell>
 	</LayoutGrid>
 </div>
 
 <style>
-	.rcorners1 {
-		margin-bottom: 30px;
-		border-radius: 7px;
-		border: 2px solid #130f42;
-		opacity: 55%;
-		flex-grow: 1;
-	}
 	.container :global(.mdc-layout-grid) {
 		padding: 0px;
 		height: 100%;

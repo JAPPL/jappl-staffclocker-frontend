@@ -16,6 +16,7 @@
 	let filteredTimeLog: TimeLog[] = [];
 	let loadingProject = false;
 	let loadingTimelog = true;
+	let totalHour = 0;
 
 	onMount(async () => {
 		await loadProject();
@@ -63,6 +64,7 @@
 				} else {
 					allTimeLog = await response.json();
 					filteredTimeLog = allTimeLog;
+					getTotalHour();
 					loadingTimelog = true;
 				}
 			})
@@ -70,18 +72,24 @@
 				handleErrorResponse(response);
 			});
 	}
+
+	function getTotalHour(): void {
+		for (let i of allTimeLog) {
+			totalHour += i.hourSpent;
+		}
+	}
 </script>
 
 <div>
 	<LayoutGrid style="padding: 0 0 30px 0">
-		<Cell span={8}>
-			<Card style="width: 100%; padding: 20px">
+		<Cell span={9}>
+			<Card style="width: 100%; padding: 20px; height: 100%">
 				<ClockYourTime bind:projectList={allProjects} />
 			</Card>
 		</Cell>
-		<Cell>
+		<Cell span={3}>
 			<Card style="width: 100%; padding: 20px; height: 100%">
-				<Profile />
+				<Profile bind:totalHour />
 			</Card>
 		</Cell>
 	</LayoutGrid>
