@@ -74,6 +74,7 @@
 	}
 
 	function getTotalHour(): void {
+		totalHour = 0;
 		for (let i of allTimeLog) {
 			totalHour += i.hourSpent;
 		}
