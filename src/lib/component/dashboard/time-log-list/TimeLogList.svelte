@@ -81,9 +81,7 @@
 		$projectId.value = timelog.projectId.projectId;
 		$hourSpent.value = timelog.hourSpent;
 		$message.value = timelog.message;
-		console.log($projectId.value);
 		openEditDialog = true;
-		console.log($projectId.value);
 	}
 </script>
 

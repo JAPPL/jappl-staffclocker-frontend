@@ -29,7 +29,7 @@
 	async function loadTimeLog(): Promise<void> {
 		loading = false;
 		const token: string = $userStore.token || '';
-		await fetch('api/timelog/all', {
+		await fetch('api/timelog/', {
 			headers: new Headers({ Authorization: `Bearer ${token}` })
 		})
 			.then(async (response: Response) => {

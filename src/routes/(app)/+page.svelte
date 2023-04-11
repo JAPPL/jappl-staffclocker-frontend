@@ -85,7 +85,7 @@
 	<LayoutGrid style="padding: 0 0 30px 0">
 		<Cell span={9}>
 			<Card style="width: 100%; padding: 20px; height: 100%">
-				<ClockYourTime bind:projectList={allProjects} />
+				<ClockYourTime bind:projectList={allProjects} on:loadTimeLog={loadTimeLog} />
 			</Card>
 		</Cell>
 		<Cell span={3}>

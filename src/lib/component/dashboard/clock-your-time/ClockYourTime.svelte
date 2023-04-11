@@ -5,15 +5,25 @@
 	import { userStore } from '$lib/store/user';
 	import toast from 'svelte-french-toast';
 	import Button, { Label } from '@smui/button';
-
+	import { required, min } from 'svelte-forms/validators';
 	import Flatpickr from 'svelte-flatpickr';
-
 	import 'flatpickr/dist/flatpickr.css';
 	import 'flatpickr/dist/themes/light.css';
 	import type { ErrorResponse } from '../../../interface/error-response';
 	import type { Project } from '../../../interface/project';
+	import { field, form } from 'svelte-forms';
+	import { createEventDispatcher } from 'svelte';
 
-	let date: Date | null = null;
+	const dispatch = createEventDispatcher();
+	export let projectList: Project[] = [];
+
+	let message = field('message', '', [required()]);
+	let hourSpent = field('hourSpent', 1, [min(1)]);
+	let project = field('project', 0, [min(1)]);
+	let selectedDate = field('date', null, [required()]);
+	let timeLogForm = form(message, hourSpent, project, selectedDate);
+	let loading = false;
+
 	const flatpickrOptions = {
 		wrap: true,
 		element: '#my-picker',
@@ -25,13 +35,6 @@
 		]
 	};
 
-	export let projectList: Project[] = [];
-
-	let describeWork = '';
-	let project: Project | null = null;
-	let hourSpent: number | null = 1;
-	let loading = false;
-
 	async function handleErrorResponse(response: Response): Promise<void> {
 		if (response.status == 500) {
 			toast.error('Internal server error.');
@@ -42,37 +45,42 @@
 	}
 
 	async function saveTimeLog(): Promise<void> {
-		loading = false;
-		const token: string = $userStore.token || '';
-		// TODO: Add form validator here to handle negative case
-		// console.log(
-		// 	JSON.stringify({
-		// 		hour_spent: hourSpent,
-		// 		message: describeWork,
-		// 		project_id: project?.projectId,
-		// 		timestamp: new Date(new Date().setDate(date!.getDate()))
-		// 	})
-		// );
-		await fetch('api/timelog/create', {
-			method: 'POST',
-			body: JSON.stringify({
-				hour_spent: hourSpent,
-				message: describeWork,
-				project_id: project?.projectId,
-				timestamp: new Date(new Date().setDate(date!.getDate()))
-			}),
-			headers: new Headers({ Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' })
-		})
-			.then(async (response: Response) => {
-				if (!response.ok) {
-					return Promise.reject(response);
-				} else {
-					toast.success('Add new time log successfully.');
-				}
+		await timeLogForm.validate();
+		if ($timeLogForm.valid) {
+			loading = true;
+			const token: string = $userStore.token || '';
+			await fetch('api/timelog/create', {
+				method: 'POST',
+				body: JSON.stringify({
+					hour_spent: $hourSpent.value,
+					message: $message.value,
+					project_id: $project.value,
+					timestamp: new Date(new Date().setDate($selectedDate.value.getDate()))
+				}),
+				headers: new Headers({
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'application/json'
+				})
 			})
-			.catch((response: Response) => {
-				handleErrorResponse(response);
-			});
+				.then(async (response: Response) => {
+					if (!response.ok) {
+						return Promise.reject(response);
+					} else {
+						toast.success('Add new time log successfully.');
+						dispatch('loadTimeLog', true);
+						$message.value = '';
+						$hourSpent.value = 1;
+						$project.value = 0;
+						$selectedDate.value = null;
+					}
+				})
+				.catch((response: Response) => {
+					handleErrorResponse(response);
+				})
+				.finally(() => (loading = false));
+		} else {
+			toast.error('Some fields are incomplete. Please revise them.');
+		}
 	}
 </script>
 
@@ -88,8 +96,10 @@
 			style="width: 100%; height: 100%;"
 			helperLine$style="width: 100%;"
 			input$placeholder="Describe your work"
+			disabled={loading}
+			invalid={$timeLogForm.hasError('message.required')}
 			textarea
-			bind:value={describeWork}
+			bind:value={$message.value}
 		/>
 	</div>
 	<LayoutGrid>
@@ -102,8 +112,10 @@
 					<Select
 						style="width: 100%;"
 						variant="outlined"
+						disabled={loading}
 						key={(value) => `${value == null ? '' : value}`}
-						bind:value={hourSpent}
+						bind:value={$hourSpent.value}
+						invalid={$timeLogForm.hasError('hourSpent.min')}
 						placeholder="Hours Spent"
 					>
 						{#each [1, 2, 3, 4, 5, 6, 7, 8] as value}
@@ -122,12 +134,14 @@
 					<Select
 						style="width: 100%;"
 						variant="outlined"
-						key={(value) => `${value === '' ? 'Select' : value}`}
-						bind:value={project}
+						disabled={loading}
+						invalid={$timeLogForm.hasError('project.min')}
+						key={(project) => `${project ? project : 0}`}
+						bind:value={$project.value}
 					>
-						<Option />
-						{#each projectList as value}
-							<Option {value}>{value.projectName}</Option>
+						<Option value={0}>Not selected</Option>
+						{#each projectList as project (project.projectName)}
+							<Option value={project.projectId}>{project.projectName}</Option>
 						{/each}
 					</Select>
 				</div>
@@ -140,7 +154,7 @@
 				<div>
 					<h1>Date</h1>
 				</div>
-				<Flatpickr options={flatpickrOptions} bind:value={date} element="#my-picker">
+				<Flatpickr options={flatpickrOptions} bind:value={$selectedDate.value} element="#my-picker">
 					<div id="my-picker">
 						<input type="text" placeholder="Select Date.." data-input />
 					</div>
@@ -174,6 +188,7 @@
 		border-radius: 5px;
 		padding: 5px;
 	}
+
 	:global(input:focus) {
 		box-shadow: none !important;
 	}
