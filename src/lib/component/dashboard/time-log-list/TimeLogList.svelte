@@ -77,7 +77,6 @@
 	}
 
 	function toggleEditDialog(timelog: TimeLog): void {
-		console.log(timelog.projectId.projectId, $projectId.value, timelog);
 		$id.value = timelog.id;
 		$projectId.value = timelog.projectId.projectId;
 		$hourSpent.value = timelog.hourSpent;
