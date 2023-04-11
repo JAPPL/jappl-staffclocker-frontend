@@ -1,3 +1,1 @@
-/api/* https://staffclocker.azurewebsites.net/:splat
-/api https://staffclocker.azurewebsites.net/:splat
-/api/ https://staffclocker.azurewebsites.net/:splat
+/api/* https://staffclocker.azurewebsites.net/:splat 200
