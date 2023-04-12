@@ -59,6 +59,7 @@
 		"@typescript-eslint/parser": "^5.45.0",
 		"@vitest/coverage-c8": "^0.29.7",
 		"@vitest/ui": "^0.29.8",
+		"date-picker-svelte": "^2.3.0",
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-svelte3": "^4.0.0",
@@ -84,6 +85,8 @@
 	"dependencies": {
 		"firebase": "^9.17.2",
 		"firebase-admin": "^11.5.0",
+		"flatpickr": "^4.6.13",
+		"svelte-flatpickr": "^3.3.2",
 		"svelte-local-storage-store": "^0.4.0"
 	}
 }
