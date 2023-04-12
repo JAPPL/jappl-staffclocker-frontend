@@ -1,8 +1,28 @@
 <script lang="ts">
 	import { userStore } from '../../../store/user';
 	import Button, { Label } from '@smui/button';
+	import toast from 'svelte-french-toast';
+	import { goto } from '$app/navigation';
+	import type { ErrorResponse } from '../../../interface/error-response';
 
 	export let totalHour = 0;
+
+	async function logout() {
+		await fetch('/auth/session', {
+			method: 'DELETE'
+		}).then(async (response: Response) => {
+			if (response.ok) {
+				toast.success('Logout successfully.');
+				localStorage.clear();
+				await goto('/login');
+			} else if (response.status == 500) {
+				toast.error('Internal server error');
+			} else {
+				const error: ErrorResponse = await response.json();
+				toast.error(error.detail);
+			}
+		});
+	}
 </script>
 
 <div>
@@ -14,7 +34,9 @@
 	<div style="display: flex; justify-content: flex-end;">
 		<Button
 			color="secondary"
-			on:click={() => console.log('cowagunga')}
+			on:click={() => {
+				logout();
+			}}
 			variant="unelevated"
 			class="button-shaped-round"
 		>

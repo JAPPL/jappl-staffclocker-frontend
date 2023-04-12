@@ -25,3 +25,11 @@ export const POST: RequestHandler = async ({ request }) => {
 		});
 	}
 };
+
+export const DELETE: RequestHandler = () => {
+	const expiredCookie = 'session=; SameSite=Strict; path=/; HttpOnly; Secure; Max-Age=0';
+	return new Response('logout', {
+		status: 200,
+		headers: { 'Set-Cookie': expiredCookie }
+	});
+};
